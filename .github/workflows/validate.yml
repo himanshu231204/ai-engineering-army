@@ -1,0 +1,25 @@
+name: Validate and package
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate skills, docs, and fixtures
+        run: python tools/aiea.py validate
+      - name: Build host packages
+        run: |
+          python tools/aiea.py package --host claude-code --output "$RUNNER_TEMP/aiea-packages"
+          python tools/aiea.py package --host codex --output "$RUNNER_TEMP/aiea-packages"
+          python tools/aiea.py package --host opencode --output "$RUNNER_TEMP/aiea-packages"

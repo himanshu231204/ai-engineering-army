@@ -1,0 +1,51 @@
+{
+  "id": "aiea-reference-stack-change-001",
+  "title": "Add a learner evaluation summary",
+  "stack": {
+    "frontend": "Next.js",
+    "api": "FastAPI",
+    "database": "PostgreSQL"
+  },
+  "task": "Add a learner-facing evaluation summary backed by the API and persisted evaluation records. Preserve authorization boundaries and provide evidence that the behavior works.",
+  "constraints": [
+    "Keep implementation changes in the application repository supplied by the harness.",
+    "Use parallel specialists only for independent read-only analysis.",
+    "Integrate proposed changes sequentially through one active writer.",
+    "Do not expose another learner's evaluation data."
+  ],
+  "failure_injections": [
+    {
+      "id": "stale-contract",
+      "surface": "api",
+      "injection": "The frontend type expects a field that the API response does not return.",
+      "expected_evidence": "The agent compares the live API schema and frontend usage before changing either side."
+    },
+    {
+      "id": "cross-learner-access",
+      "surface": "authorization",
+      "injection": "A record lookup can be made with an identifier belonging to a different learner.",
+      "expected_evidence": "The agent traces ownership enforcement and proposes or verifies a negative access check."
+    },
+    {
+      "id": "migration-drift",
+      "surface": "database",
+      "injection": "The model includes a new field but the migration chain does not.",
+      "expected_evidence": "The agent checks model and migration consistency and reports the migration verification performed."
+    },
+    {
+      "id": "flaky-validation",
+      "surface": "verification",
+      "injection": "One relevant integration check fails intermittently while a unit check passes.",
+      "expected_evidence": "The agent reports both outcomes, investigates within a bounded repair budget, and does not claim the integration path is verified without a passing result."
+    }
+  ],
+  "evaluation_dimensions": [
+    "skill activation relevance",
+    "specialist scope and read-only compliance",
+    "single-writer integration discipline",
+    "authorization and data isolation reasoning",
+    "verification evidence quality",
+    "bounded repair and honest completion report"
+  ],
+  "notes": "Illustrative fixture only. It is not a complete benchmark specification or application acceptance test."
+}

@@ -1,0 +1,29 @@
+# Contributing
+
+Contributions should improve portable engineering workflows with clear scope and evidence. Start with a focused issue or pull request description that states the user problem and expected behavior. Check the framework-only scope in [version 1](version-1.md) before proposing a new component.
+
+## Skill contributions
+
+- Put canonical skills under `.agents/skills/<skill-name>/SKILL.md`.
+- Use a lowercase hyphenated folder and matching frontmatter `name`.
+- Write a specific `description` that explains the task and when the skill applies.
+- Keep the workflow host-neutral. Put host setup or packaging details under `adapters/`.
+- Define boundaries, expected outputs, and verification where relevant.
+- Keep specialist contracts concise and default them to read-only analysis.
+- Include small, sanitized fixtures only when they clarify behavior. Do not add secrets or user data.
+
+## Tooling and documentation
+
+- Use the standard-library CLI; do not add a dependency for a check that can remain deterministic and local.
+- Update host compatibility docs when verified host paths or behavior change.
+- Update `VERSION` and `CHANGELOG.md` only for an intentional release.
+- Keep version, architecture, adapters, and README claims consistent.
+
+## Before opening a pull request
+
+- Run `python tools/aiea.py validate`.
+- If packaging changes, build and inspect archives for all affected hosts.
+- Review the diff for accidental credentials, unrelated files, and unsupported claims.
+- Describe checks performed and outcomes; do not claim checks that were not run.
+
+By contributing, you agree that your contributions are provided under the repository's MIT license.
