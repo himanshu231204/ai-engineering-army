@@ -9,20 +9,27 @@ permissions:
 
 jobs:
   validate-and-package:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.12"]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python }}
       - name: Validate skills, docs, and fixtures
         run: python tools/aiea.py validate
       - name: Test distribution contracts
         run: python -m unittest discover -s tests -v
-      - name: Build host packages
-        run: |
-          python tools/aiea.py package --host claude-code-plugin --output "$RUNNER_TEMP/aiea-packages"
-          python tools/aiea.py package --host claude-code --output "$RUNNER_TEMP/aiea-packages"
-          python tools/aiea.py package --host codex --output "$RUNNER_TEMP/aiea-packages"
-          python tools/aiea.py package --host opencode --output "$RUNNER_TEMP/aiea-packages"
+      - name: Prepare release assets
+        run: python tools/aiea.py release --output dist/release
+      - name: Retain downloadable release assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: aiea-${{ matrix.os }}-python-${{ matrix.python }}
+          path: dist/release/*
+          if-no-files-found: error

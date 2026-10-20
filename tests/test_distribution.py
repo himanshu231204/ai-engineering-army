@@ -92,6 +92,10 @@ class DistributionTests(unittest.TestCase):
         for host, prefix in aiea.HOST_PATHS.items():
             with self.subTest(host=host), zipfile.ZipFile(self.package(host)) as archive:
                 self.assertIsNone(archive.testzip())
+                self.assertTrue(all(info.create_system == 3 for info in archive.infolist()),
+                                "ZIP creator platform must be fixed for cross-platform reproducibility")
+                license_name = "LICENSE" if host == "claude-code-plugin" else "AIEA-LICENSE.txt"
+                self.assertEqual(archive.read(license_name), (aiea.ROOT / "LICENSE").read_bytes())
                 manifest = json.loads(archive.read("aiea-manifest.json"))
                 self.assertEqual(set(manifest["skills"]), {skill.name for skill in skills})
                 self.assertEqual(set(archive.namelist()), {f["path"] for f in manifest["files"]} | {"aiea-manifest.json"})
@@ -110,6 +114,7 @@ class DistributionTests(unittest.TestCase):
                     self.assertNotIn(".claude-plugin/marketplace.json", archive.namelist())
                 else:
                     self.assertNotIn(".claude-plugin/plugin.json", archive.namelist())
+                    self.assertNotIn("LICENSE", archive.namelist())  # Preserve the target project's license.
 
     def test_subset_and_reproducibility(self):
         args = ("--skill", "security-review", "--skill", "aiea-bootstrap", "--skill", "security-review")
@@ -137,6 +142,31 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(archive.read_bytes(), before)
         self.run_cli("package", "--host", "claude-code-plugin", "--skill", "missing-skill", "--output", str(self.output / "unknown"), code=2)
         self.assertFalse((self.output / "unknown").exists())
+
+    def test_release_bundle_checksums_and_overwrite_protection(self):
+        destination = self.output / "release"
+        self.run_cli("release", "--output", str(destination))
+        version = aiea.VERSION_FILE.read_text().strip()
+        expected = {f"aiea-{version}-{host}.zip" for host in aiea.HOST_PATHS}
+        expected.add("RELEASE-NOTES.md")
+        self.assertEqual({p.name for p in destination.iterdir()}, expected | {"SHA256SUMS"})
+        checksums = {}
+        for line in (destination / "SHA256SUMS").read_text().splitlines():
+            digest, name = line.split("  ", 1)
+            checksums[name] = digest
+        self.assertEqual(set(checksums), expected)
+        for name, digest in checksums.items():
+            self.assertEqual(hashlib.sha256((destination / name).read_bytes()).hexdigest(), digest)
+        before = {p.name: p.read_bytes() for p in destination.iterdir()}
+        self.run_cli("release", "--output", str(destination), code=2)
+        self.assertEqual({p.name: p.read_bytes() for p in destination.iterdir()}, before)
+        repeat = self.output / "repeat-release"
+        self.run_cli("release", "--output", str(repeat))
+        self.assertEqual({p.name: p.read_bytes() for p in repeat.iterdir()}, before)
+        empty = self.output / "existing-empty"
+        empty.mkdir()
+        self.run_cli("release", "--output", str(empty), code=2)
+        self.assertEqual(list(empty.iterdir()), [])
 
     def test_rejects_manifest_drift(self):
         root = self.output / "repo"

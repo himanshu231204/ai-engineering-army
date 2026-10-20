@@ -100,3 +100,24 @@ source commit `8d64706`.
 Budget-exhaustion behavior passed only for the explicitly constrained Codex Work
 exercise. Native triggering, completed Claude/OpenCode behavior, and broader
 reliability are not established by these results.
+
+## Public preview preparation: 2026-10-20
+
+Prepared against `06cf3eb` plus the release-preparation working-tree changes.
+Version 1.1.1 remains a candidate until a maintainer tags and publishes it.
+
+| Check | Observed result |
+|---|---|
+| Repository validator | Passed for all nine skills, metadata, registry, required docs, and fixtures |
+| Distribution regression suite | All 11 tests passed locally on Windows with Python 3.11; covers all four ZIPs, license inclusion, hashes, reproducibility, release checksums, and overwrite protection |
+| Local release bundle | Four full-skill ZIPs, release notes, and SHA256SUMS generated under `dist/release-1.1.1/` |
+| Extracted Claude plugin | Native `claude plugin validate` passed against the newly built, extracted plugin ZIP with nonessential traffic disabled |
+| Source manifests | Marketplace validation passed; plugin validation passed with the contributor CLAUDE.md warning, with nonessential traffic disabled |
+| CI matrix | Configured for Windows/Linux and Python 3.10/3.12 with downloadable artifacts; hosted runs for these changes have not yet occurred |
+
+Every package now includes the MIT license. Project-skill ZIPs use
+`AIEA-LICENSE.txt` to preserve the target project's own `LICENSE`. New
+[developer instructions](getting-started.md) provide explicit bootstrap loading,
+first-task guidance, and host troubleshooting. The
+[release notes](release-notes.md) carry the remaining behavioral limitations.
+These distribution checks do not change the native-host results above.

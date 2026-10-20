@@ -2,7 +2,13 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.1.1` (unreleased patch candidate) · **License:** MIT
+**Source version:** `1.1.1` (public preview candidate; not yet a tagged release) · **License:** MIT
+
+Start with the [developer guide](docs/getting-started.md) for installation,
+your first task, and troubleshooting. Use explicit bootstrap activation for the
+preview. Packaging and bounded Codex Work exercises have been checked; automatic
+activation and completed native Claude/OpenCode model workflows remain unverified.
+See [the evidence and limits](docs/verification-status.md).
 
 ## What v1 includes
 
@@ -56,6 +62,15 @@ python tools/aiea.py package --host claude-code --skill aiea-bootstrap --skill s
 Codex and OpenCode can also discover the canonical `.agents/skills/` directory directly when the repository itself is the target project. Claude Code project skills use `.claude/skills/`; the CLI produces that layout for Claude Code.
 
 See [CLI usage](docs/cli.md), [host compatibility](docs/host-compatibility.md), and the [v1 definition of done](docs/version-1.md).
+
+Maintainers can prepare all four packages, release notes, and checksums locally:
+
+```sh
+python tools/aiea.py release
+```
+
+The bundle is written to `dist/release-1.1.1/`. This command does not publish.
+See [the release procedure](docs/release.md).
 
 See [verification status](docs/verification-status.md) for observed host checks and
 [manual workflow validation](docs/workflow-validation.md) for the repair/delegation checklist.

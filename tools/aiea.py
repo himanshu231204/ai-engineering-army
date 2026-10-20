@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import sys
+import tempfile
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -42,6 +43,8 @@ REQUIRED_DOCS = (
     "docs/workflow-validation.md",
     "docs/verification-status.md",
     "docs/release.md",
+    "docs/release-notes.md",
+    "docs/getting-started.md",
     "docs/security.md",
     "docs/contributing.md",
     "adapters/README.md",
@@ -313,6 +316,7 @@ def command_list(args: argparse.Namespace) -> int:
 
 def _archive_entry(archive: zipfile.ZipFile, name: str, data: bytes) -> None:
     info = zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
+    info.create_system = 3  # Fixed Unix metadata, including on Windows.
     info.compress_type = zipfile.ZIP_DEFLATED
     info.external_attr = 0o100644 << 16
     archive.writestr(info, data)
@@ -370,7 +374,8 @@ def command_package(args: argparse.Namespace) -> int:
         # The standalone bundle uses Claude Code's standard skills/ layout.
         plugin.pop("skills", None)
         add_payload(".claude-plugin/plugin.json", (json.dumps(plugin, indent=2) + "\n").encode("utf-8"))
-        add_payload("LICENSE", (ROOT / "LICENSE").read_bytes())
+
+    add_payload("LICENSE" if is_plugin else "AIEA-LICENSE.txt", (ROOT / "LICENSE").read_bytes())
 
     installation = (
         "Extract into a separate plugin directory, then run `claude --plugin-dir ./aiea-plugin` "
@@ -381,7 +386,11 @@ def command_package(args: argparse.Namespace) -> int:
     install_readme = (
         f"# AIEA {version} package for {args.host}\n\n" + installation +
         "Review skill contents before enabling them in an agent host. This package contains instructions and resources; "
-        "it does not install an agent, grant tools, or configure permissions.\n"
+        "it does not install an agent, grant tools, or configure permissions.\n\n"
+        "Start a new host session, ask it to load `aiea-bootstrap`, and give it your task, "
+        "acceptance checks, and a repair-attempt budget. Automatic activation is not guaranteed. "
+        "If a skill is missing, report it rather than claiming it loaded.\n\n"
+        "Developer guide: https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/getting-started.md\n"
     ).encode("utf-8")
     add_payload("AIEA-INSTALL.md", install_readme)
 
@@ -418,6 +427,47 @@ def command_package(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_release(args: argparse.Namespace) -> int:
+    """Stage the four distributions and checksums locally; never publish."""
+    if command_validate(args):
+        return 1
+    version = VERSION_FILE.read_text(encoding="utf-8-sig").strip()
+    output_dir = Path(args.output or f"dist/release-{version}").expanduser().resolve()
+    if output_dir.exists():
+        print(f"refusing to overwrite existing release directory: {output_dir}", file=sys.stderr)
+        return 2
+    try:
+        output_dir.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="aiea-release-", dir=output_dir.parent) as temporary:
+            stage = Path(temporary) / "bundle"
+            stage.mkdir()
+            for host in HOST_PATHS:
+                result = command_package(argparse.Namespace(host=host, output=str(stage), skill=None))
+                if result:
+                    return result
+            (stage / "RELEASE-NOTES.md").write_bytes((ROOT / "docs/release-notes.md").read_bytes())
+            checksums = "".join(
+                f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n"
+                for path in sorted(stage.iterdir())
+            )
+            (stage / "SHA256SUMS").write_bytes(checksums.encode("utf-8"))
+            # Exclusive creation preserves existing output, including an empty
+            # directory. Copy files instead of relying on directory renames,
+            # which some Windows sandboxes do not permit.
+            output_dir.mkdir()
+            for path in sorted(stage.iterdir()):
+                with (output_dir / path.name).open("xb") as destination:
+                    destination.write(path.read_bytes())
+    except FileExistsError:
+        print(f"refusing to overwrite existing release output: {output_dir}", file=sys.stderr)
+        return 2
+    except OSError as error:
+        print(f"could not prepare release: {error}", file=sys.stderr)
+        return 1
+    print(f"Prepared {output_dir}. Review checks and release notes before publishing.")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     version = VERSION_FILE.read_text(encoding="utf-8-sig").strip() if VERSION_FILE.is_file() else "unknown"
     parser = argparse.ArgumentParser(prog="aiea", description="Work with the AIEA portable skill library.")
@@ -436,6 +486,10 @@ def build_parser() -> argparse.ArgumentParser:
     package.add_argument("--output", default="dist", help="output directory (default: dist)")
     package.add_argument("--skill", action="append", help="include one skill by exact name; repeat to select several")
     package.set_defaults(handler=command_package)
+
+    release = commands.add_parser("release", help="prepare all four ZIPs, release notes, and SHA256SUMS locally")
+    release.add_argument("--output", help="new output directory (default: dist/release-<version>)")
+    release.set_defaults(handler=command_release)
     return parser
 
 

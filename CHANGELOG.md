@@ -4,6 +4,12 @@ All notable AIEA changes are recorded here.
 
 ## 1.1.1 - Unreleased
 
+- Prepared a public preview with developer onboarding, explicit activation, and host troubleshooting.
+- Included the MIT license in every host package, not only the plugin ZIP.
+- Fixed ZIP creator metadata across operating systems for reproducible packaging.
+- Added local release bundles with four ZIPs, release notes, and SHA-256 checksums.
+- Expanded CI to Windows/Linux and Python 3.10/3.12 with downloadable release artifacts.
+- Recorded observed repair/delegation and constrained exhaustion behavior with native-host limitations.
 - Flattened all nine canonical skill directories for consistent host discovery.
 - Added a validated, host-neutral registry for core/specialist groups.
 - Bundled a manual discovery fallback with bootstrap, including missing-skill handling.

@@ -28,7 +28,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 4. `python tools/aiea.py package --host <host>` creates a ZIP with the correct project path for that host, an install note, and a manifest with SHA-256 file hashes.
 5. Packaging refuses to overwrite an existing archive and rejects unknown skill names.
 6. Packages contain no symlinks and do not include unrelated repository files.
-7. CI runs validation and builds packages for all three hosts.
+7. CI runs validation and regression checks on Windows/Linux and Python 3.10/3.12, builds all four package targets, and retains downloadable artifacts.
 8. The root README and agent instructions state the framework-only boundary and provide copy-pasteable commands.
 9. Architecture, host compatibility, CLI, security, contribution, evaluation, and release documentation agree with the implementation.
 10. Local validation and packaging require no secrets, network access, or managed runtime. Installing from GitHub requires network access through the host.
@@ -36,6 +36,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 12. Regression checks cover all four package targets, hashes, selected skills, reproducibility, overwrite protection, and invalid plugin metadata.
 
 13. Bootstrap packages contain a host-neutral discovery reference and explain honest fallback when a selected-skill package omits a needed skill.
+14. Every package includes the MIT license without replacing the consumer project's license. The local `release` command prepares all four ZIPs, release notes, and checksums without publishing or overwriting prior output.
 
 ## Version history
 
