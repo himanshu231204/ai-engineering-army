@@ -5,7 +5,7 @@ working, authenticated Claude Code, Codex, or OpenCode installation. Model acces
 usage charges, tools, and permissions come from that host. AIEA adds no service,
 telemetry, credentials, hooks, or background agent.
 
-The current version is prepared for a **public preview**. Packaging is tested; automatic
+The current version is prepared for a **public release**. Packaging is tested; automatic
 activation and completed native Claude/OpenCode model workflows remain unverified.
 Use explicit activation for your first task and inspect the host's loading evidence.
 See [verification status](verification-status.md) for the precise evidence.

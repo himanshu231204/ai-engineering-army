@@ -13,9 +13,9 @@ on:
         required: true
         type: string
       prerelease:
-        description: "Mark the release as a prerelease"
+        description: "Mark the release as a prerelease instead of a full release"
         required: false
-        default: true
+        default: false
         type: boolean
       draft:
         description: "Create a draft for review instead of publishing"
@@ -50,7 +50,7 @@ jobs:
             draft="$DISPATCH_DRAFT"
           else
             tag="$REF_NAME"
-            prerelease="true"
+            prerelease="false"
             draft="false"
           fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"

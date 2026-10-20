@@ -47,7 +47,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 The early v0.1 discussion described the design milestone. The repository adopted
 1.0.0 for its initial framework source and 1.1.0 for plugin distribution; those
 existing labels are preserved. 1.1.1 records discovery and layout fixes and was
-never published separately. The public preview 1.2.0, tagged `v1.2.0`, adds
+never published separately. The public release 1.2.0, tagged `v1.2.0`, adds
 Codex/OpenCode plugin adapters; 1.2.1 adds the tag-triggered release workflow;
 1.2.2 adds the declarative version registry; 1.3.0 is the current candidate
 expanding workflow stages and specialist contracts to 17 skills.

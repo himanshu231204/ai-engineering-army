@@ -8,7 +8,7 @@ A dated source entry does not itself establish a hosted release or tag.
 
 ## Current release policy
 
-Prepare the current version as a **public preview**, with GitHub's prerelease flag. Developers
+Prepare the current version as a **public release**. Developers
 can install the default-branch marketplace or use reviewed versioned ZIPs once
 published. Do not advertise automatic triggering or completed native
 Claude/OpenCode workflows as verified. The current host blockers are documented
@@ -53,7 +53,7 @@ ZIP after extraction too. Passing metadata validation is not behavioral proof.
 Pushing a version tag runs the `Release` workflow. It checks out the tagged
 source, verifies that `VERSION` matches the tag, validates the repository, runs
 the regression suite, builds all six packages, verifies the bundle checksums,
-and publishes a prerelease carrying every asset. A failed check stops the
+and publishes a release carrying every asset. A failed check stops the
 release; nothing is published from a broken build.
 
 1. Review the complete diff and confirm the working tree contains only release changes.
@@ -75,8 +75,8 @@ If a host smoke check is unavailable, state that limitation in the release notes
 Run the same workflow from the Actions tab with the `draft` input enabled. It
 builds and attaches the assets but leaves the release unpublished, so it can be
 inspected and then published from the Releases page. The `prerelease` input
-controls the prerelease flag; the tag path marks releases as prereleases to
-match the public preview policy above.
+marks a candidate as a prerelease instead of a full release; the tag path
+publishes full releases to match the public release policy above.
 
 ### Manual publishing
 
@@ -84,7 +84,7 @@ Manual publishing remains available and is useful when the workflow cannot run:
 
 ```sh
 python tools/aiea.py release --output dist/release-<VERSION>
-gh release create v<VERSION> dist/release-<VERSION>/* --verify-tag --draft --prerelease --title "AIEA <VERSION>" --notes-file dist/release-<VERSION>/RELEASE-NOTES.md
+gh release create v<VERSION> dist/release-<VERSION>/* --verify-tag --draft --title "AIEA <VERSION>" --notes-file dist/release-<VERSION>/RELEASE-NOTES.md
 ```
 ```
 
