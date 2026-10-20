@@ -2,10 +2,13 @@
 
 All notable AIEA changes are recorded here.
 
-## 1.3.1 - Unreleased
+## 1.3.2 - Unreleased
 
 - Published every tagged version as a full public release instead of a prerelease, so the Releases section lists them without prerelease badges.
 - Changed the release workflow to publish full releases on a tag push; the `prerelease` input remains available for candidates that need one.
+
+## 1.3.1 - 2026-10-20
+
 - Added GitHub issue templates for bug reports, evidence-backed reports, feature requests, and new host support, with blank issues disabled and questions routed to Discussions.
 - Added a pull request template that requires the submitting model and host, the problem, the scope check, alternatives considered, the commands run with their exit codes, and a human review of the complete diff.
 - Required the issue and pull request templates as repository documents so validation fails if one goes missing.
