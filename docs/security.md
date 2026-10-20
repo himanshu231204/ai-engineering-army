@@ -25,3 +25,7 @@ AIEA skills guide agents that may have access to files, commands, credentials, a
 ## Reporting
 
 Record the scope reviewed, evidence inspected, severity rationale, and assumptions. A clean review means no issue was found in the examined scope; it is not a guarantee of security.
+
+## Sponsorship
+
+Sponsorship is a personal contribution to the maintainer. It grants no support SLA, no privileged repository or host access, and no influence over the roadmap. No contributor data, private project content, or skill usage information is collected or shared with sponsors.

@@ -134,3 +134,11 @@ The package command refuses to overwrite an existing archive. Remove or choose a
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Sponsor
+
+AIEA is free and MIT-licensed, and it stays that way. Sponsorship pays for the
+maintainer time behind host verification runs, releases, and documentation — not
+for a paid tier, a hosted service, or telemetry.
+
+Sponsor the project on [GitHub Sponsors](https://github.com/sponsors/himanshu231204).
