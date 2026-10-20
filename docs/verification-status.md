@@ -160,6 +160,26 @@ read-only in this session.
 | Implementation/handoff | Each configuration repaired the helper in one of two allowed attempts; lead confirmed passing unchanged tests and only the authorized helper changed |
 | Native activation and broader reliability | Unverified; these are manually loaded, bounded examples with no superiority claim |
 
-See [the catalog](skill-catalog.md) and [specialist assignments](specialist-contracts.md)
+See the [catalog](skill-catalog.md) and [specialist assignments](specialist-contracts.md)
 for the added contracts. The host continues to own agent creation, tools, and
 permissions; this expansion does not install independent agents or enforce a sandbox.
+
+## Directory submission preparation: 2026-10-20
+
+Prepared for the Claude Code plugin directory portal. The portal validated the
+repository at `main` and reported passing checks with warnings and one policy
+hold. The repository changes below address what the portal can check.
+
+| Check | Observed result |
+|---|---|
+| Claude Code 2.1.281 marketplace validation | `claude plugin validate .` passed with no warnings after the changes below |
+| Claude Code 2.1.281 plugin validation | `claude plugin validate .claude-plugin/plugin.json` passed with no warnings; the earlier contributor `CLAUDE.md` warning is gone |
+| Listing icon | `.claude-plugin/icon.png` is a complete 1024x1024 PNG, 16,257 bytes, square, inside the 512-2048 px and 2 MB limits; the plugin ZIP ships it and the manifest points at it |
+| Directory listing metadata | `displayName`, `icon`, `documentationUrl`, and `supportUrl` are set in `plugin.json` only, never in the marketplace entry |
+| Registry and packaging | The validator now rejects a missing, non-square, oversized, or wrong-format icon and a missing `displayName`; two regression tests cover both the manifest and the packaged archive |
+| Source-download instructions | `docs/getting-started.md` separates fetching the source from running it, states that the fetch runs nothing, and tells the reader to review the files first |
+| Contributor instructions | The root `CLAUDE.md` was removed and its guidance merged into `AGENTS.md`, which Claude Code reads natively; the README states that contributor files are not plugin context |
+| Policy hold: name similarity | Unresolved and left to the reviewer. The slug `aiea` is unique and unchanged. The directory already contains plugins named `Engineering` (Anthropic verified), `Data Engineering`, `Superpowers`, `Code Review`, and `PR Review Toolkit`, and a third-party plugin named `ai-engineering`. A hold is a reviewer decision, not a rejection. |
+
+Directory review decides what goes live. Native automatic activation of the
+skills remains unverified, as recorded above.

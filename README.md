@@ -2,13 +2,22 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.3.2` (public release) · **License:** MIT
+**Source version:** `1.3.3` (public release) · **License:** MIT
 
 Start with the [developer guide](docs/getting-started.md) for installation,
 your first task, and troubleshooting. Use explicit bootstrap activation for the
 preview. Packaging and bounded Codex Work exercises have been checked; automatic
 activation and completed native Claude/OpenCode model workflows remain unverified.
 See [the evidence and limits](docs/verification-status.md).
+
+**What this plugin runs.** It ships Markdown instructions and two static
+adapter files. It contains no hooks, no MCP servers, no commands, no agents,
+and no executable scripts, and it makes no network requests or telemetry. The
+only file that executes is the optional OpenCode 2 registration module, which
+reads its own bundled skill files and contributes skill definitions. `AGENTS.md`
+and `AGENTS.md` at the repository root are contributor instructions for people
+working *in* this repository; they are not loaded as plugin context. The plugin
+ships its own user-facing context in the `aiea-bootstrap` skill.
 
 ## What v1 includes
 
@@ -125,13 +134,13 @@ that limitation. Browser QA distinguishes source analysis from live observations
 - `skill-registry.json` - portable skill names and core/specialist groups.
 - `.version-bump.json` - every file that carries the repository version.
 - `.github/` - validation and release workflows, issue templates, and the pull request template.
-- `.claude-plugin/` — Claude Code plugin manifest and marketplace catalog.
+- `.claude-plugin/` — Claude Code plugin manifest, marketplace catalog, and listing icon.
 - `.codex-plugin/` - Codex plugin source manifest.
 - `tools/aiea.py` — validation, listing, and host package CLI.
 - `adapters/` — host discovery and packaging guidance; see verification status for observed checks.
 - `evaluations/fixtures/` — small, host-neutral examples.
 - `docs/` — vision, final architecture, v1 acceptance, security, contribution, CLI, host, and release guidance.
-- `AGENTS.md` and `CLAUDE.md` — shared coding-agent instructions.
+- `AGENTS.md` — shared coding-agent instructions.
 
 ArmyBench is a separate project. This repository does not contain its application, runner, scoring service, or benchmark dataset. The initial evaluation stack is Next.js, FastAPI, and PostgreSQL.
 

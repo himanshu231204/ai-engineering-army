@@ -236,6 +236,31 @@ class DistributionTests(unittest.TestCase):
         self.run_cli("release", "--output", str(empty), code=2)
         self.assertEqual(list(empty.iterdir()), [])
 
+    def test_plugin_manifest_carries_listing_metadata_and_a_valid_icon(self):
+        plugin = json.loads((aiea.ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+        self.assertTrue(plugin.get("displayName"), "the directory listing needs a displayName")
+        self.assertTrue(plugin.get("description"))
+        icon = plugin.get("icon")
+        self.assertTrue(icon, "the directory listing needs an icon")
+        self.assertTrue(icon.startswith("./"))
+        icon_path = aiea.ROOT / icon.removeprefix("./")
+        self.assertTrue(icon_path.is_file())
+        data = icon_path.read_bytes()
+        self.assertLess(len(data), 2 * 1024 * 1024, "the listing icon must be under 2 MB")
+        size = aiea._png_size(data)
+        self.assertIsNotNone(size, "the listing icon must be a PNG")
+        width, height = size
+        self.assertEqual(width, height, "the listing icon must be square")
+        self.assertTrue(512 <= width <= 2048, "the listing icon must be 512 to 2048 pixels wide")
+
+    def test_plugin_zip_ships_the_listing_icon(self):
+        with zipfile.ZipFile(self.package("claude-code-plugin")) as archive:
+            plugin = json.loads(archive.read(".claude-plugin/plugin.json"))
+            icon = plugin["icon"].removeprefix("./")
+            self.assertIn(icon, archive.namelist())
+            self.assertEqual(archive.read(icon),
+                             (aiea.ROOT / icon).read_bytes())
+
     def test_rejects_manifest_drift(self):
         root = self.output / "repo"
         shutil.copytree(aiea.ROOT / ".claude-plugin", root / ".claude-plugin")

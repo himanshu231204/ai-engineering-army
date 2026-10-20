@@ -2,6 +2,15 @@
 
 All notable AIEA changes are recorded here.
 
+## 1.3.3 - Unreleased
+
+- Added a listing icon (`.claude-plugin/icon.png`) and the directory listing fields `displayName`, `icon`, `documentationUrl`, and `supportUrl`.
+- Added validation that rejects a missing, non-square, out-of-range, oversized, or wrong-format listing icon, and a missing `displayName`.
+- Shipped the listing icon inside the Claude Code plugin ZIP.
+- Split the source-download instructions into a fetch step that runs nothing and a separate build step that asks the reader to review the files first.
+- Removed the root `CLAUDE.md` and merged its guidance into `AGENTS.md`, which Claude Code reads natively, clearing the plugin validator warning.
+- Documented what the plugin runs, sends, and fetches in the README.
+
 ## 1.3.2 - Unreleased
 
 - Published every tagged version as a full public release instead of a prerelease, so the Releases section lists them without prerelease badges.

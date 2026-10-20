@@ -13,6 +13,9 @@ Read `README.md` and the relevant files in `docs/` before making structural chan
 - Keep skill content host-neutral. Put host paths and packaging differences in `adapters/` and `docs/host-compatibility.md`.
 - Read only relevant skills. Do not claim a host loaded a skill unless it was loaded or the host provides evidence.
 - Specialist skills are concise, bounded, and read-only by default.
+- Do not assume a host discovered the canonical skills in this repository. When the workflow matters, read the matching `SKILL.md` directly.
+- Never edit a generated package copy as source. Change `.agents/skills/` and rebuild the package.
+- Before changing host packaging behavior, check the official host documentation and update `adapters/<host>/README.md` and `docs/host-compatibility.md`.
 
 ## Engineering workflow
 

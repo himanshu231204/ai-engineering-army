@@ -107,9 +107,9 @@ marketplace inventory. The existing `--host claude-code` ZIP still installs
 unnamespaced project skills into `.claude/skills/`. Choose one installation method
 per target project to avoid exposing duplicate copies of AIEA skills.
 
-Repository `AGENTS.md` and `CLAUDE.md` guide contributors. They are not plugin
-startup instructions. Claude's validator may warn about the root `CLAUDE.md`;
-the plugin's user-facing instructions are in its skills. Bootstrap bundles a
+Repository `AGENTS.md` guides contributors and is read by hosts that support
+it. It is not plugin startup instructions. The plugin's user-facing instructions
+are in its skills. Bootstrap bundles a
 `references/discovery.md` fallback, copied unchanged into standalone and project
 skill packages. It resolves available siblings without assuming the target
 application contains the AIEA source tree.

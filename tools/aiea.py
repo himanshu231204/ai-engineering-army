@@ -32,7 +32,6 @@ PLUGIN_HOSTS = {"claude-code-plugin", "codex-plugin", "opencode-plugin"}
 REQUIRED_DOCS = (
     "README.md",
     "AGENTS.md",
-    "CLAUDE.md",
     "LICENSE",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
@@ -227,6 +226,38 @@ def load_skills(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
     return skills, errors
 
 
+def _png_size(data: bytes) -> tuple[int, int] | None:
+    """Return the pixel size of a PNG header, or None when it is not a PNG."""
+    if not data.startswith(b"\x89PNG\r\n\x1a\n") or len(data) < 24 or data[12:16] != b"IHDR":
+        return None
+    return int.from_bytes(data[16:20], "big"), int.from_bytes(data[20:24], "big")
+
+
+def _icon_errors(root: Path, icon: object) -> list[str]:
+    """Check the listing icon against the directory's size and format rules."""
+    if icon is None:
+        return []
+    if not isinstance(icon, str) or not icon.startswith("./"):
+        return ["plugin icon must be a path inside the plugin folder"]
+    path = root / icon.removeprefix("./")
+    if not path.is_file():
+        return [f"plugin icon file is missing: {icon}"]
+    data = path.read_bytes()
+    if len(data) > 2 * 1024 * 1024:
+        return ["plugin icon must be under 2 MB"]
+    size = _png_size(data)
+    if size is None:
+        if data.startswith(b"\xff\xd8\xff"):
+            return []
+        return ["plugin icon must be a PNG or JPEG image"]
+    width, height = size
+    if width != height:
+        return ["plugin icon must be square"]
+    if not 512 <= width <= 2048:
+        return ["plugin icon must be between 512 and 2048 pixels on each side"]
+    return []
+
+
 def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
     """Check AIEA distribution invariants, not the entire Claude Code schema."""
     errors: list[str] = []
@@ -249,6 +280,9 @@ def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
         author = plugin.get("author")
         if not isinstance(author, dict) or not author.get("name") or not plugin.get("description"):
             errors.append("plugin must have an author name and description")
+        if not plugin.get("displayName"):
+            errors.append("plugin must have a displayName for the directory listing")
+        errors.extend(_icon_errors(root, plugin.get("icon")))
         expected = sorted("./" + skill.path.relative_to(root).as_posix() for skill in skills)
         paths = plugin.get("skills")
         if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
@@ -676,6 +710,9 @@ def command_package(args: argparse.Namespace) -> int:
         # The standalone bundle uses Claude Code's standard skills/ layout.
         plugin.pop("skills", None)
         add_payload(".claude-plugin/plugin.json", (json.dumps(plugin, indent=2) + "\n").encode("utf-8"))
+        icon = plugin.get("icon")
+        if isinstance(icon, str) and (ROOT / icon.removeprefix("./")).is_file():
+            add_payload(icon.removeprefix("./"), (ROOT / icon.removeprefix("./")).read_bytes())
     elif args.host == "codex-plugin":
         plugin = json.loads((ROOT / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
         plugin["skills"] = "./skills/"

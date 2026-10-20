@@ -12,7 +12,7 @@ flowchart LR
     Archive --> Host[Claude Code / Codex / OpenCode]
     Canonical --> Native[Native skill discovery<br/>Codex and OpenCode]
     Native --> Host
-    Guidance[AGENTS.md / CLAUDE.md] --> Lead[Lead coding agent]
+    Guidance[AGENTS.md] --> Lead[Lead coding agent]
     Host --> Lead
     Lead -->|bounded, read-only questions| Specialists[Relevant specialist skills]
     Specialists -->|findings and evidence| Lead
