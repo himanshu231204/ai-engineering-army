@@ -8,7 +8,7 @@ A dated source entry does not itself establish a hosted release or tag.
 
 ## Current release policy
 
-Prepare 1.2.0 as a **public preview**, with GitHub's prerelease flag. Developers
+Prepare 1.2.1 as a **public preview**, with GitHub's prerelease flag. Developers
 can install the default-branch marketplace or use reviewed versioned ZIPs once
 published. Do not advertise automatic triggering or completed native
 Claude/OpenCode workflows as verified. The current host blockers are documented
@@ -41,20 +41,41 @@ ZIP after extraction too. Passing metadata validation is not behavioral proof.
 
 ## Publish
 
+Pushing a version tag runs the `Release` workflow. It checks out the tagged
+source, verifies that `VERSION` matches the tag, validates the repository, runs
+the regression suite, builds all six packages, verifies the bundle checksums,
+and publishes a prerelease carrying every asset. A failed check stops the
+release; nothing is published from a broken build.
+
 1. Review the complete diff and confirm the working tree contains only release changes.
 2. Commit the release changes and tag the commit `v<VERSION>`.
-3. If a GitHub remote is configured, create a draft prerelease and attach all eight prepared assets. Use the prepared notes as the description, including the host limitations. Review the draft before publishing it.
+3. Push the tag. The workflow publishes the release automatically.
+
+   ```sh
+   git tag v1.2.1
+   git push origin main v1.2.1
+   ```
+
 4. Push the marketplace files to the default branch before advertising GitHub installation commands. Official Anthropic directory submission is separate.
 5. Do not publish credentials, private evaluation data, or unreviewed third-party skills.
 
 If a host smoke check is unavailable, state that limitation in the release notes instead of marking it verified.
 
-For 1.2.0, after reviewing and committing the changes, maintainers can run:
+### Review before publishing
+
+Run the same workflow from the Actions tab with the `draft` input enabled. It
+builds and attaches the assets but leaves the release unpublished, so it can be
+inspected and then published from the Releases page. The `prerelease` input
+controls the prerelease flag; the tag path marks releases as prereleases to
+match the public preview policy above.
+
+### Manual publishing
+
+Manual publishing remains available and is useful when the workflow cannot run:
 
 ```sh
-git tag v1.2.0
-git push origin main v1.2.0
-gh release create v1.2.0 dist/release-1.2.0/* --verify-tag --draft --prerelease --title "AIEA 1.2.0 public preview" --notes-file dist/release-1.2.0/RELEASE-NOTES.md
+python tools/aiea.py release --output dist/release-1.2.1
+gh release create v1.2.1 dist/release-1.2.1/* --verify-tag --draft --prerelease --title "AIEA 1.2.1" --notes-file dist/release-1.2.1/RELEASE-NOTES.md
 ```
 
 These are publishing steps for the maintainer, not commands run by `aiea release`.
@@ -63,5 +84,6 @@ the assets from the exact source being tagged. After editing release notes,
 rebuild in a fresh output directory so the packaged notes and checksums agree.
 
 CI uses Node 22 for adapter contract tests and validates on Linux and Windows with Python 3.10 and 3.12, prepares the bundle,
-and uploads it as a workflow artifact. This does not publish a GitHub release.
-Review all matrix results and use assets from the intended source commit.
+and uploads it as a workflow artifact. The `Release` workflow publishes the
+GitHub release; the validation workflow does not. Review all matrix results
+and use assets from the intended source commit.

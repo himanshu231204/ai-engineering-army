@@ -2,7 +2,7 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.2.0` (public preview; tagged `v1.2.0`) · **License:** MIT
+**Source version:** `1.2.1` (public preview in development; latest release [`v1.2.0`](https://github.com/himanshu231204/ai-engineering-army/releases/tag/v1.2.0)) · **License:** MIT
 
 Start with the [developer guide](docs/getting-started.md) for installation,
 your first task, and troubleshooting. Use explicit bootstrap activation for the
@@ -91,7 +91,7 @@ Maintainers can prepare all six packages, release notes, and checksums locally:
 python tools/aiea.py release
 ```
 
-The bundle is written to `dist/release-1.2.0/`. This command does not publish.
+The bundle is written to `dist/release-1.2.1/`. This command does not publish.
 See [the release procedure](docs/release.md).
 
 See [verification status](docs/verification-status.md) for observed host checks and

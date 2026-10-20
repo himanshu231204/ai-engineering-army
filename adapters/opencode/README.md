@@ -8,7 +8,7 @@ Build the local adapter:
 python tools/aiea.py package --host opencode-plugin
 ```
 
-Extract `dist/aiea-1.2.0-opencode-plugin.zip` into a separate directory. In your
+Extract `dist/aiea-1.2.1-opencode-plugin.zip` into a separate directory. In your
 target project's `opencode.json` or `opencode.jsonc`, merge the following entry
 with existing configuration:
 

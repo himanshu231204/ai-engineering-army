@@ -8,7 +8,7 @@ Build a self-contained local marketplace from the AIEA checkout:
 python tools/aiea.py package --host codex-plugin
 ```
 
-Extract `dist/aiea-1.2.0-codex-plugin.zip` into a separate directory, keeping
+Extract `dist/aiea-1.2.1-codex-plugin.zip` into a separate directory, keeping
 hidden folders. It includes `.codex-plugin/plugin.json`, the nine skills under
 `skills/`, and `.agents/plugins/marketplace.json`. From your terminal, run:
 

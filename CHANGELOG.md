@@ -2,6 +2,13 @@
 
 All notable AIEA changes are recorded here.
 
+## 1.2.1 - Unreleased
+
+- Added a tag-triggered release workflow that validates, tests, builds every package, verifies the bundle checksums, and publishes a release with all assets.
+- Added a manual dispatch path with draft and prerelease overrides for releases that need review first.
+- Refused to publish when `VERSION` and the release tag disagree.
+- Documented the automated release path and kept manual publishing available.
+
 ## 1.2.0 - 2026-10-20
 
 - Added a Codex source manifest and self-contained plugin ZIP with a local marketplace.

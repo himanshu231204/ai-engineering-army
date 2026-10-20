@@ -39,14 +39,15 @@ It does not include an orchestration engine, standalone agent, application, onli
 13. Bootstrap packages contain a host-neutral discovery reference and explain honest fallback when a selected-skill package omits a needed skill.
 14. Every package includes the MIT license without replacing the consumer project's license. The local `release` command prepares all six ZIPs, release notes, and checksums without publishing or overwriting prior output.
 15. The Codex plugin ZIP is a self-contained local marketplace. The OpenCode plugin registers only bundled skills, refuses name/ID conflicts, and fails explicitly on unsupported host APIs or missing files. Offline adapter tests are distinguished from native host evidence.
+16. Pushing a version tag publishes a GitHub release with every package asset, release notes, and checksums. The release workflow refuses to publish when `VERSION` and the tag disagree, when validation fails, or when the regression suite fails.
 
 ## Version history
 
 The early v0.1 discussion described the design milestone. The repository adopted
 1.0.0 for its initial framework source and 1.1.0 for plugin distribution; those
 existing labels are preserved. 1.1.1 records discovery and layout fixes and was
-never published separately; 1.2.0 is the current public preview, tagged `v1.2.0`,
-adding Codex/OpenCode plugin adapters.
+never published separately; 1.2.0 is the latest release, tagged `v1.2.0`, adding
+Codex/OpenCode plugin adapters; 1.2.1 adds the tag-triggered release workflow.
 A version bump records a source/API change, not completion of
 behavioral evaluation. Changelog dates record source history; hosted release/tag
 status is checked separately using the release procedure.

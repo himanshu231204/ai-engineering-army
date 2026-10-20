@@ -1,4 +1,4 @@
-# AIEA 1.2.0 public preview
+# AIEA 1.2.1 public preview
 
 AIEA is an MIT-licensed portable engineering skill library for Claude Code, Codex,
 and OpenCode. This preview contains nine skills, plugin adapters for all three
@@ -64,5 +64,5 @@ are instructions, not installed agent processes, and read-only boundaries and
 repair budgets depend on host/model compliance. See the
 [verification record](https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/verification-status.md).
 
-This file describes the `v1.2.0` public preview. Building the bundle locally does
+This file describes the `v1.2.1` public preview. Building the bundle locally does
 not publish a GitHub release or certify additional behavioral checks.
