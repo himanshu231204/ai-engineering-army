@@ -22,7 +22,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 
 ## Acceptance criteria
 
-1. All skill directories have valid required metadata, unique names, and matching folder names.
+1. All canonical skill directories are direct children of `.agents/skills/`, have valid required metadata and matching names, and occur exactly once in `skill-registry.json` with a valid group.
 2. `python tools/aiea.py validate` succeeds from the repository root and checks skill metadata, required v1 documentation, and evaluation fixture JSON.
 3. `python tools/aiea.py list` prints all skills and `--group core` or `--group specialists` filters them correctly.
 4. `python tools/aiea.py package --host <host>` creates a ZIP with the correct project path for that host, an install note, and a manifest with SHA-256 file hashes.
@@ -34,6 +34,17 @@ It does not include an orchestration engine, standalone agent, application, onli
 10. Local validation and packaging require no secrets, network access, or managed runtime. Installing from GitHub requires network access through the host.
 11. Plugin metadata matches `VERSION`, explicitly covers every canonical skill once, and resolves within the plugin root.
 12. Regression checks cover all four package targets, hashes, selected skills, reproducibility, overwrite protection, and invalid plugin metadata.
+
+13. Bootstrap packages contain a host-neutral discovery reference and explain honest fallback when a selected-skill package omits a needed skill.
+
+## Version history
+
+The early v0.1 discussion described the design milestone. The repository adopted
+1.0.0 for its initial framework source and 1.1.0 for plugin distribution; those
+existing labels are preserved. 1.1.1 is the unreleased patch candidate for discovery
+and layout fixes. A version bump records a source/API change, not completion of
+behavioral evaluation. Changelog dates record source history; hosted release/tag
+status is checked separately using the release procedure.
 
 ## Operational limits
 

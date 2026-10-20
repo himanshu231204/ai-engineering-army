@@ -1,0 +1,13 @@
+{
+  "skills": [
+    {"name": "aiea-bootstrap", "group": "core"},
+    {"name": "bounded-repair", "group": "core"},
+    {"name": "controlled-delegation", "group": "core"},
+    {"name": "evidence-verification", "group": "core"},
+    {"name": "architecture-review", "group": "specialists"},
+    {"name": "backend-review", "group": "specialists"},
+    {"name": "data-review", "group": "specialists"},
+    {"name": "frontend-review", "group": "specialists"},
+    {"name": "security-review", "group": "specialists"}
+  ]
+}

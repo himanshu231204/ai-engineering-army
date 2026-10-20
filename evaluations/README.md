@@ -4,4 +4,7 @@ This directory holds small, host-neutral examples used to discuss and later eval
 
 ArmyBench is a separate project. It should own benchmark application code, execution harnesses, scoring, datasets, and release process. Keep only sanitized, minimal fixtures here, and mirror or version them deliberately when ArmyBench consumes them.
 
+For a bounded manual maintainer check, see [workflow validation](../docs/workflow-validation.md).
+This does not add execution or scoring to this repository.
+
 The initial reference application stack is Next.js, FastAPI, and PostgreSQL. Fixtures should test engineering behavior such as diagnosis, safe delegation, integration discipline, and evidence quality across that stack without prescribing one agent vendor.

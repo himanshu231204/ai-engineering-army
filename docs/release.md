@@ -2,6 +2,10 @@
 
 This document defines the v1 release process. Publishing a GitHub release requires a configured remote and maintainer credentials; local package generation does not.
 
+An unreleased candidate may already carry its intended version in `VERSION` and
+the plugin manifest. Keep its changelog entry marked Unreleased until publishing.
+A dated source entry does not itself establish a hosted release or tag.
+
 ## Prepare
 
 1. Confirm the intended version and update both `VERSION` and `.claude-plugin/plugin.json` using the same semantic version. The plugin version controls hosted update detection.
@@ -19,7 +23,9 @@ This document defines the v1 release process. Publishing a GitHub release requir
    ```
 
 5. Inspect the manifests and archive contents. Confirm the package includes only the intended skills and paths.
-6. Smoke-check discovery in each supported host when available. Record host versions and results; a ZIP build alone is not proof that a host loaded the skills.
+6. Follow `docs/workflow-validation.md` and update `docs/verification-status.md` with
+   the source commit, host versions, actual discovery inventories, and observed
+   repair/delegation behavior. Record unavailable checks as unrun.
 
 Also run `claude plugin validate .` and
 `claude plugin validate .claude-plugin/plugin.json`, then follow the

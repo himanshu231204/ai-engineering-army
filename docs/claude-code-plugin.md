@@ -77,7 +77,8 @@ a separate submission; this repository does not claim that approval.
 
 The repository is both marketplace root and plugin root (`source: "./"`).
 `.claude-plugin/plugin.json` explicitly lists each canonical skill directory,
-including nested specialists. All referenced files are inside the plugin root,
+including all five specialists. Version 1.1.1 makes every canonical skill a direct
+child of `.agents/skills/`; core/specialist groups live in `skill-registry.json`. All referenced files are inside the plugin root,
 so copying the repository into Claude Code's plugin cache preserves them. There
 are no symlinks or maintained skill copies.
 
@@ -100,7 +101,10 @@ per target project to avoid exposing duplicate copies of AIEA skills.
 
 Repository `AGENTS.md` and `CLAUDE.md` guide contributors. They are not plugin
 startup instructions. Claude's validator may warn about the root `CLAUDE.md`;
-the plugin's user-facing instructions are in its skills.
+the plugin's user-facing instructions are in its skills. Bootstrap bundles a
+`references/discovery.md` fallback, copied unchanged into standalone and project
+skill packages. It resolves available siblings without assuming the target
+application contains the AIEA source tree.
 
 ## Smoke check and updates
 
@@ -125,7 +129,7 @@ To remove a test installation, use `claude plugin uninstall aiea@aiea-marketplac
 and `claude plugin marketplace remove aiea-marketplace` with the same configuration
 directory used to install it.
 
-## Verification snapshot (2026-10-20)
+## Historical 1.1.0 verification snapshot (2026-10-20)
 
 - Claude Code **2.1.304** accepted both source manifests. Its only warning is the
   expected contributor `CLAUDE.md` warning described above.
@@ -137,6 +141,9 @@ directory used to install it.
   hash/content checks, deterministic builds, subsets, and rejection cases.
 - Model-driven skill invocation and remote GitHub installation have not been
   verified. No release tag or official directory submission has been made.
+
+For the current candidate, see [verification status](verification-status.md) and
+the [manual workflow procedure](workflow-validation.md).
 
 ## Official format references
 

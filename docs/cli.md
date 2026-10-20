@@ -26,6 +26,7 @@ python tools/aiea.py package --host opencode --skill aiea-bootstrap --skill secu
 
 `validate` checks:
 
+- direct skill-directory layout and exact name/group membership in `skill-registry.json`;
 - `SKILL.md` frontmatter delimiters, required `name` and `description`, Agent Skills name and description limits, name-to-directory agreement, duplicate names, and symlinks;
 - `VERSION` semantic version format;
 - plugin and marketplace JSON, matching release versions, and complete canonical skill registration;
@@ -33,6 +34,10 @@ python tools/aiea.py package --host opencode --skill aiea-bootstrap --skill secu
 - JSON syntax for evaluation fixtures.
 
 This is a focused structural check, not a complete YAML implementation or a behavioral evaluator. Run `python -m unittest discover -s tests -v` for offline regression checks. CI also builds each host archive to ensure the package paths and manifest generation work.
+
+Skill grouping comes from `skill-registry.json`, not directory nesting. The
+registry is maintenance metadata and does not need to be installed in a target
+project. Bootstrap carries its own discovery reference with every package.
 
 ## Package contents
 

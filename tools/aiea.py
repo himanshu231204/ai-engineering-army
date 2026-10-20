@@ -39,6 +39,8 @@ REQUIRED_DOCS = (
     "docs/host-compatibility.md",
     "docs/cli.md",
     "docs/claude-code-plugin.md",
+    "docs/workflow-validation.md",
+    "docs/verification-status.md",
     "docs/release.md",
     "docs/security.md",
     "docs/contributing.md",
@@ -141,6 +143,32 @@ def parse_frontmatter(path: Path) -> tuple[dict[str, str], list[str]]:
     return fields, errors
 
 
+def load_registry(root: Path) -> tuple[dict[str, str], list[str]]:
+    groups: dict[str, str] = {}
+    errors: list[str] = []
+    try:
+        document = json.loads((root / "skill-registry.json").read_text(encoding="utf-8-sig"))
+        entries = document.get("skills") if isinstance(document, dict) else None
+        if not isinstance(entries, list) or not entries:
+            return {}, ["skill-registry.json must define a non-empty skills array"]
+    except (OSError, ValueError) as error:
+        return {}, [f"skill-registry.json: {error}"]
+    for entry in entries:
+        if not isinstance(entry, dict):
+            errors.append("skill-registry.json entries must contain a name and group")
+            continue
+        name, group = entry.get("name"), entry.get("group")
+        if not isinstance(name, str) or not NAME_PATTERN.fullmatch(name):
+            errors.append("skill-registry.json contains an invalid name")
+        elif group not in ("core", "specialists"):
+            errors.append(f"skill-registry.json: {name} must use core or specialists")
+        elif name in groups:
+            errors.append(f"skill-registry.json: duplicate name {name}")
+        else:
+            groups[name] = group
+    return groups, errors
+
+
 def load_skills(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
     skills_root = root / ".agents" / "skills"
     if not skills_root.is_dir():
@@ -151,12 +179,15 @@ def load_skills(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
         return [], ["no SKILL.md files found under .agents/skills"]
 
     skills: list[Skill] = []
-    errors: list[str] = []
+    groups, errors = load_registry(root)
     names: dict[str, Path] = {}
     for skill_file in skill_files:
         relative = skill_file.relative_to(root).as_posix()
         skill_dir = skill_file.parent
-        if skill_file.is_symlink() or any(child.is_symlink() for child in skill_dir.rglob("*")):
+        if skill_dir.parent != skills_root:
+            errors.append(f"{relative}: skills must be direct children of .agents/skills")
+            continue
+        if skill_dir.is_symlink() or skill_file.is_symlink() or any(child.is_symlink() for child in skill_dir.rglob("*")):
             errors.append(f"{relative}: symlinks are not allowed in packaged skill directories")
             continue
         fields, file_errors = parse_frontmatter(skill_file)
@@ -169,8 +200,12 @@ def load_skills(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
             if name in names:
                 errors.append(f"{relative}: duplicate skill name also used by {names[name].relative_to(root).as_posix()}")
             names[name] = skill_file
-            group = "specialists" if "specialists" in skill_dir.relative_to(skills_root).parts else "core"
+            group = groups.get(name, "")
+            if not group:
+                errors.append(f"{relative}: name is missing from skill-registry.json")
             skills.append(Skill(name=name, description=description, path=skill_dir, group=group))
+    for name in sorted(groups.keys() - names.keys()):
+        errors.append(f"skill-registry.json: no canonical skill found for {name}")
     return skills, errors
 
 

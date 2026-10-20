@@ -2,7 +2,16 @@
 
 All notable AIEA changes are recorded here.
 
-## 1.1.0 - Unreleased
+## 1.1.1 - Unreleased
+
+- Flattened all nine canonical skill directories for consistent host discovery.
+- Added a validated, host-neutral registry for core/specialist groups.
+- Bundled a manual discovery fallback with bootstrap, including missing-skill handling.
+- Made verification and bounded repair transitions explicit in bootstrap.
+- Added layout/registry regression coverage and manual workflow verification guidance.
+- Distinguished source version history from observed behavior and release publication.
+
+## 1.1.0 - 2026-10-20
 
 - Added the `aiea` Claude Code plugin and `aiea-marketplace` self-hosted catalog.
 - Registered all nine canonical skills explicitly without maintaining copies.

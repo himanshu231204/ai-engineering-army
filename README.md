@@ -2,7 +2,7 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Current version:** `1.1.0` · **License:** MIT
+**Source version:** `1.1.1` (unreleased patch candidate) · **License:** MIT
 
 ## What v1 includes
 
@@ -15,15 +15,15 @@ AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, 
 
 ## Claude Code plugin
 
-AIEA now includes a Claude Code plugin and its own marketplace. After this change
-is published to the default branch, install it inside Claude Code:
+AIEA includes a Claude Code plugin and its own marketplace. The following commands
+install the version currently available on the repository default branch:
 
 ```text
 /plugin marketplace add himanshu231204/ai-engineering-army
 /plugin install aiea@aiea-marketplace
 ```
 
-Start with `/aiea:aiea-bootstrap`. For this unpublished checkout, use
+Start with `/aiea:aiea-bootstrap`. To try a local checkout, use
 `claude --plugin-dir /path/to/ai-engineering-army` from a separate target project.
 See [plugin installation, all nine commands, and smoke checks](docs/claude-code-plugin.md).
 No Python is needed to use the installed plugin; Python is for maintainer tooling.
@@ -57,6 +57,9 @@ Codex and OpenCode can also discover the canonical `.agents/skills/` directory d
 
 See [CLI usage](docs/cli.md), [host compatibility](docs/host-compatibility.md), and the [v1 definition of done](docs/version-1.md).
 
+See [verification status](docs/verification-status.md) for observed host checks and
+[manual workflow validation](docs/workflow-validation.md) for the repair/delegation checklist.
+
 ## Project principles
 
 - **Portable skills first:** canonical sources live in `.agents/skills/` and use the [Agent Skills format](https://agentskills.io/specification).
@@ -69,9 +72,10 @@ See [CLI usage](docs/cli.md), [host compatibility](docs/host-compatibility.md), 
 ## Repository map
 
 - `.agents/skills/` — canonical core skills and specialist contracts.
+- `skill-registry.json` - portable skill names and core/specialist groups.
 - `.claude-plugin/` — Claude Code plugin manifest and marketplace catalog.
 - `tools/aiea.py` — validation, listing, and host package CLI.
-- `adapters/` — verified host discovery and packaging details.
+- `adapters/` — host discovery and packaging guidance; see verification status for observed checks.
 - `evaluations/fixtures/` — small, host-neutral examples.
 - `docs/` — vision, final architecture, v1 acceptance, security, contribution, CLI, host, and release guidance.
 - `AGENTS.md` and `CLAUDE.md` — shared coding-agent instructions.

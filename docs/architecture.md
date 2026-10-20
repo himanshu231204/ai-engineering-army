@@ -30,6 +30,11 @@ AIEA supplies instructions and a packaging tool. The host supplies models, tools
 
 `.agents/skills/<skill-name>/SKILL.md` is the source of truth. Every skill follows the Agent Skills format, uses a stable name that matches its directory, and has a concise activation description. Supporting resources live beside that skill. Specialist skills describe read-only scope and a concise findings format.
 
+Core and specialist skills are all direct children of `.agents/skills/`.
+`skill-registry.json` maps unique skill names to `core` or `specialists`; activation
+descriptions remain in skill frontmatter. Validation requires exact registry/source
+membership and rejects nested skills. Packages do not need the maintenance registry.
+
 Changes to canonical skills flow outward through packages. Host-specific instructions must not silently fork the workflow contract.
 
 ### 2. AIEA CLI
@@ -55,6 +60,12 @@ as `aiea@aiea-marketplace`. A standalone plugin ZIP is generated with the standa
 `skills/` layout. Both forms remain instruction-only host adapters; neither adds
 an orchestration engine. See [the plugin guide](claude-code-plugin.md).
 
+Bootstrap first uses the host inventory. If it is incomplete, the bundled
+`references/discovery.md` maps tasks to skill names and resolves them as siblings
+of the loaded bootstrap. Selected-skill packages may omit siblings; absence is
+reported without silently installing content. The reference travels with bootstrap
+in every package, so discovery does not depend on repository-root docs.
+
 ### 4. Delegation protocol
 
 The lead agent scopes work and may ask independent specialists bounded read-only questions. Specialists return findings with evidence and open questions; they do not modify shared code. The lead reviews findings and performs shared-tree integration as the single active writer. If the host cannot run specialists independently, the lead uses the same contracts directly and reports the limitation when relevant.
@@ -62,6 +73,11 @@ The lead agent scopes work and may ask independent specialists bounded read-only
 ### 5. Verification and repair
 
 The lead chooses checks appropriate to the behavior changed, inspects their results, and reports passed, failed, and unrun checks. Failed checks are diagnosed from evidence. Repairs are limited to a stated small budget; unresolved failures are reported rather than hidden.
+
+The intended sequence is scope and inspect, select/load skills, optionally review,
+integrate through one writer, run checks, diagnose/repair within a stated budget,
+then report evidence. [Manual validation](workflow-validation.md) checks this
+sequence; [verification status](verification-status.md) records what was observed.
 
 ### 6. Evaluation boundary
 

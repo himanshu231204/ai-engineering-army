@@ -4,7 +4,8 @@ Contributions should improve portable engineering workflows with clear scope and
 
 ## Skill contributions
 
-- Put canonical skills under `.agents/skills/<skill-name>/SKILL.md`.
+- Put every canonical skill directly under `.agents/skills/<skill-name>/SKILL.md`.
+- Register its name and core/specialist group in `skill-registry.json`; do not create grouping subdirectories.
 - Use a lowercase hyphenated folder and matching frontmatter `name`.
 - Write a specific `description` that explains the task and when the skill applies.
 - Keep the workflow host-neutral. Put host setup or packaging details under `adapters/`.

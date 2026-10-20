@@ -38,6 +38,54 @@ class DistributionTests(unittest.TestCase):
         for group, count in (("core", 4), ("specialists", 5)):
             self.assertTrue(self.run_cli("list", "--group", group).stdout.strip().endswith(f"{count} skills"))
 
+    def test_canonical_skills_match_direct_host_discovery(self):
+        skills, errors = aiea.load_skills()
+        self.assertEqual(errors, [])
+        discoverable = {p.parent.name for p in aiea.SKILLS_ROOT.glob("*/SKILL.md")}
+        self.assertEqual(discoverable, {skill.name for skill in skills})
+
+    def registry_fixture(self):
+        root = self.output / "registry-fixture"
+        for name in ("custom-workflow", "custom-review"):
+            path = root / ".agents/skills" / name / "SKILL.md"
+            path.parent.mkdir(parents=True)
+            path.write_text(f"---\nname: {name}\ndescription: Review the supplied task.\n---\n", encoding="utf-8")
+        registry = {"skills": [
+            {"name": "custom-workflow", "group": "core"},
+            {"name": "custom-review", "group": "specialists"},
+        ]}
+        (root / "skill-registry.json").write_text(json.dumps(registry), encoding="utf-8")
+        return root, registry
+
+    def test_registry_controls_groups_without_directory_nesting(self):
+        root, _ = self.registry_fixture()
+        skills, errors = aiea.load_skills(root)
+        self.assertEqual(errors, [])
+        self.assertEqual({skill.name: skill.group for skill in skills},
+                         {"custom-workflow": "core", "custom-review": "specialists"})
+
+    def test_registry_rejects_incomplete_or_invalid_membership(self):
+        root, registry = self.registry_fixture()
+        entries = registry["skills"]
+        cases = [entries[:1], entries + entries[:1],
+                 entries + [{"name": "absent", "group": "core"}],
+                 [{"name": "custom-workflow", "group": "other"}, entries[1]],
+                 [None], "invalid"]
+        for value in cases:
+            with self.subTest(value=value):
+                (root / "skill-registry.json").write_text(json.dumps({"skills": value}), encoding="utf-8")
+                _, errors = aiea.load_skills(root)
+                self.assertTrue(errors)
+
+    def test_nested_skills_are_rejected_instead_of_silently_packaged(self):
+        root, _ = self.registry_fixture()
+        source = root / ".agents/skills/custom-review"
+        destination = root / ".agents/skills/specialists/custom-review"
+        destination.parent.mkdir()
+        shutil.move(str(source), str(destination))
+        _, errors = aiea.load_skills(root)
+        self.assertTrue(any("direct" in error for error in errors), errors)
+
     def test_all_package_layouts_and_hashes(self):
         skills, errors = aiea.load_skills()
         self.assertEqual(errors, [])
@@ -72,6 +120,16 @@ class DistributionTests(unittest.TestCase):
             self.assertEqual(json.loads(archive.read("aiea-manifest.json"))["skills"], ["aiea-bootstrap", "security-review"])
             self.assertEqual(len([n for n in archive.namelist() if n.endswith("/SKILL.md")]), 2)
 
+    def test_bootstrap_only_packages_keep_the_discovery_reference(self):
+        reference = "aiea-bootstrap/references/discovery.md"
+        expected = (aiea.SKILLS_ROOT / reference).read_bytes()
+        for host, prefix in aiea.HOST_PATHS.items():
+            with self.subTest(host=host), zipfile.ZipFile(
+                    self.package(host, "--skill", "aiea-bootstrap")) as archive:
+                self.assertEqual(archive.read(f"{prefix}/{reference}"), expected)
+                self.assertEqual(json.loads(archive.read("aiea-manifest.json"))["skills"],
+                                 ["aiea-bootstrap"])
+
     def test_refuses_overwrite_and_unknown_skill(self):
         archive = self.package("claude-code-plugin")
         before = archive.read_bytes()
@@ -84,6 +142,7 @@ class DistributionTests(unittest.TestCase):
         root = self.output / "repo"
         shutil.copytree(aiea.ROOT / ".claude-plugin", root / ".claude-plugin")
         shutil.copytree(aiea.SKILLS_ROOT, root / ".agents/skills")
+        shutil.copy2(aiea.ROOT / "skill-registry.json", root / "skill-registry.json")
         skills, _ = aiea.load_skills(root)
         version = aiea.VERSION_FILE.read_text().strip()
         self.assertEqual(aiea.plugin_errors(root, skills, version), [])
