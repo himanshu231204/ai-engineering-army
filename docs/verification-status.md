@@ -175,14 +175,14 @@ hold. The repository changes below address what the portal can check.
 | Claude Code 2.1.281 marketplace validation | `claude plugin validate .` passed with no warnings after the changes below |
 | Claude Code 2.1.281 plugin validation | `claude plugin validate .claude-plugin/plugin.json` passed with no warnings; the earlier contributor `CLAUDE.md` warning is gone |
 | Listing icon | The plugin folder carries a complete square PNG listing icon at the default location the directory looks for, inside the 512-2048 px and 2 MB limits. No file in the plugin folder names its path, so no script or setting points at an image file. |
-| Directory listing metadata | `displayName`, `icon`, `documentationUrl`, and `supportUrl` are set in `plugin.json` only, never in the marketplace entry |
-| Registry and packaging | The validator now rejects a missing, non-square, oversized, or wrong-format icon and a missing `displayName`; two regression tests cover both the manifest and the packaged archive |
-| Source-download instructions | `docs/getting-started.md` separates fetching the source from running it, states that the fetch runs nothing, and tells the reader to review the files first |
+| Directory listing metadata | `displayName` is set in `plugin.json`, never in the marketplace entry. The directory-only fields `icon`, `documentationUrl`, `supportUrl`, `privacyPolicyUrl`, and `termsOfServiceUrl` are not set: Claude Code ignores them and the directory reports them as unrecognized. `homepage` carries the documentation URL Claude Code does read, and the README carries the documentation, support, and security links the directory shows as the listing description. |
+| Registry and packaging | The validator rejects a missing `displayName`, a missing `homepage`, and any directory-only field in the manifest; three regression tests cover the manifest contract and the rename migration. |
+| Source-download instructions | `docs/getting-started.md` no longer contains a shell block that fetches code and then executes it, and points at the project page for obtaining the source. |
 | Contributor instructions | The root `CLAUDE.md` was removed and its guidance merged into `AGENTS.md`, which Claude Code reads natively; the README states that contributor files are not plugin context |
 | Policy hold: name similarity | Resolved. The plugin slug is now `ai-engineering-army`, and the portal reported `Name and publisher checks passed` with no findings. The marketplace maps the former `aiea` name to the new one so existing installs migrate. |
 | Policy hold: image reference | Resolved. The listing icon sits at the default location the directory reads, and no file in the plugin folder names its path, so no script or setting points at an image file. |
 | Warning: download-and-run pattern | Resolved. The developer guide no longer contains a shell block that fetches code and then executes it. |
-| Warning: unrecognized listing fields | Left as is. `documentationUrl` and `supportUrl` are read by the directory for the listing and ignored by Claude Code at load time; the portal reports no action needed. |
+| Warning: unrecognized listing fields | Resolved. `documentationUrl` and `supportUrl` are directory-only fields that Claude Code ignores, so they were removed and `homepage` carries the documentation URL instead. The validator now rejects any directory-only field in the manifest. |
 
 Directory review decides what goes live. Native automatic activation of the
 skills remains unverified, as recorded above.

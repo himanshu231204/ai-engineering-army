@@ -18,6 +18,13 @@ SKILLS_ROOT = ROOT / ".agents" / "skills"
 VERSION_FILE = ROOT / "VERSION"
 BUMP_CONFIG = ".version-bump.json"
 PLUGIN_NAME = "ai-engineering-army"
+# Fields the Anthropic plugin directory reads for a listing but that Claude Code
+# ignores at load time. The directory reports them as unrecognized fields, and
+# `claude plugin validate` only accepts them from Claude Code v2.1.281. The
+# listing icon lives at the default path instead, and `homepage` is the field
+# Claude Code reads as the documentation URL.
+DIRECTORY_ONLY_FIELDS = ("icon", "documentationUrl", "supportUrl",
+                          "privacyPolicyUrl", "termsOfServiceUrl")
 NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 FIELD_PATTERN = re.compile(r"^([a-z][a-z0-9_-]*):(?:[ \t]*(.*))?$")
 VERSION_PATTERN = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
@@ -251,6 +258,11 @@ def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
             errors.append("plugin must have an author name and description")
         if not plugin.get("displayName"):
             errors.append("plugin must have a displayName for the directory listing")
+        if not plugin.get("homepage"):
+            errors.append("plugin must have a homepage; Claude Code reads it as the documentation URL")
+        for field in DIRECTORY_ONLY_FIELDS:
+            if field in plugin:
+                errors.append(f"plugin must not set {field}; Claude Code ignores directory-only fields")
         expected = sorted("./" + skill.path.relative_to(root).as_posix() for skill in skills)
         paths = plugin.get("skills")
         if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):

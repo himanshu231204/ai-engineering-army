@@ -2,6 +2,12 @@
 
 All notable AIEA changes are recorded here.
 
+## 1.4.2 - Unreleased
+
+- Removed the directory-only fields `documentationUrl` and `supportUrl` from the plugin manifest. Claude Code ignores them, and the plugin directory reports them as unrecognized fields.
+- Pointed `homepage` at the developer guide, which is the field Claude Code reads as the documentation URL.
+- Added validation that rejects directory-only fields in the manifest, and surfaced documentation and support links in the README, which the directory uses as the listing description.
+
 ## 1.4.1 - Unreleased
 
 - Rewrote the source-build instructions in the developer guide so no shell block fetches and then executes code, and pointed at the project page for obtaining the source.

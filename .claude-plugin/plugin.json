@@ -1,14 +1,12 @@
 {
   "name": "ai-engineering-army",
   "displayName": "AI Engineering Army",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "AI Engineering Army: portable engineering workflows, controlled delegation, read-only reviews, evidence-based verification, and bounded repair.",
   "author": {
     "name": "AI Engineering Army contributors"
   },
-  "documentationUrl": "https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/getting-started.md",
-  "supportUrl": "https://github.com/himanshu231204/ai-engineering-army/issues",
-  "homepage": "https://github.com/himanshu231204/ai-engineering-army#readme",
+  "homepage": "https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/getting-started.md",
   "repository": "https://github.com/himanshu231204/ai-engineering-army",
   "license": "MIT",
   "keywords": [

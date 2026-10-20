@@ -240,8 +240,14 @@ class DistributionTests(unittest.TestCase):
         plugin = json.loads((aiea.ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
         self.assertTrue(plugin.get("displayName"), "the directory listing needs a displayName")
         self.assertTrue(plugin.get("description"))
-        self.assertTrue(plugin.get("documentationUrl"), "the directory listing needs a documentation link")
-        self.assertTrue(plugin.get("supportUrl"), "the directory listing needs a support link")
+        self.assertTrue(plugin.get("homepage"), "Claude Code reads homepage as the documentation URL")
+
+    def test_plugin_manifest_avoids_directory_only_fields(self):
+        plugin = json.loads((aiea.ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+        for field in aiea.DIRECTORY_ONLY_FIELDS:
+            with self.subTest(field=field):
+                self.assertNotIn(field, plugin,
+                                 "Claude Code ignores directory-only fields and the directory reports them")
 
     def test_marketplace_migrates_the_previous_plugin_name(self):
         marketplace = json.loads(
