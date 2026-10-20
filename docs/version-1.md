@@ -44,8 +44,9 @@ It does not include an orchestration engine, standalone agent, application, onli
 
 The early v0.1 discussion described the design milestone. The repository adopted
 1.0.0 for its initial framework source and 1.1.0 for plugin distribution; those
-existing labels are preserved. 1.1.1 records discovery and layout fixes; 1.2.0 is
-the current public preview candidate adding Codex/OpenCode plugin adapters.
+existing labels are preserved. 1.1.1 records discovery and layout fixes and was
+never published separately; 1.2.0 is the current public preview, tagged `v1.2.0`,
+adding Codex/OpenCode plugin adapters.
 A version bump records a source/API change, not completion of
 behavioral evaluation. Changelog dates record source history; hosted release/tag
 status is checked separately using the release procedure.

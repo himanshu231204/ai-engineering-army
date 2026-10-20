@@ -64,5 +64,5 @@ are instructions, not installed agent processes, and read-only boundaries and
 repair budgets depend on host/model compliance. See the
 [verification record](https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/verification-status.md).
 
-This file describes a release candidate. Preparing it locally does not publish a
-GitHub release or certify additional behavioral checks.
+This file describes the `v1.2.0` public preview. Building the bundle locally does
+not publish a GitHub release or certify additional behavioral checks.

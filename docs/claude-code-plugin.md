@@ -142,7 +142,7 @@ directory used to install it.
 - Model-driven skill invocation and remote GitHub installation have not been
   verified. No release tag or official directory submission has been made.
 
-For the current candidate, see [verification status](verification-status.md) and
+For the current release, see [verification status](verification-status.md) and
 the [manual workflow procedure](workflow-validation.md).
 
 ## Official format references

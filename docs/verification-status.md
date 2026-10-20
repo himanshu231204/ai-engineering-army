@@ -104,7 +104,8 @@ reliability are not established by these results.
 ## Public preview preparation: 2026-10-20
 
 Prepared against `06cf3eb` plus the release-preparation working-tree changes.
-Version 1.1.1 remains a candidate until a maintainer tags and publishes it.
+Version 1.1.1 was never published separately; it was superseded by the tagged
+`v1.2.0`.
 
 | Check | Observed result |
 |---|---|
