@@ -141,3 +141,25 @@ The [Codex](../adapters/codex/README.md) and
 [OpenCode](../adapters/opencode/README.md) guides distinguish plugins from
 project-skill ZIPs. Prior native authentication, filesystem, and telemetry
 blockers remain as recorded above; no new automatic-triggering pass is claimed.
+
+## Expanded workflow and specialist candidate: 2026-10-20
+
+The [1.3 exercise record](validation/2026-10-20-skill-expansion.md) describes the
+staged expansion to 17 skills: ten core workflows and seven read-only specialist
+contracts. It is prepared from the current 1.2 source, based on `abcbaac`.
+Main-checkout application is a separate step because its canonical directory is
+read-only in this session.
+
+| Check | Observed result |
+|---|---|
+| Expanded distribution | Validator and all 16 regression tests passed; six host targets and four Node adapter checks covered |
+| Claude plugin structure | Native source validation passed with the contributor CLAUDE.md warning; extracted 17-skill plugin passed without warnings, with nonessential traffic disabled |
+| Routing | Every registered skill occurs in bootstrap's portable fallback; subset packages retain the fallback resource and missing-skill instructions |
+| Manual planning | Guided and baseline runs returned source-backed plans, explicit decisions, and proposed checks; fixtures unchanged |
+| Manual testing/browser-QA review | Guided and baseline runs found the redirect/coverage gaps and reported browser checks unrun; fixtures unchanged |
+| Implementation/handoff | Each configuration repaired the helper in one of two allowed attempts; lead confirmed passing unchanged tests and only the authorized helper changed |
+| Native activation and broader reliability | Unverified; these are manually loaded, bounded examples with no superiority claim |
+
+See [the catalog](skill-catalog.md) and [specialist assignments](specialist-contracts.md)
+for the added contracts. The host continues to own agent creation, tools, and
+permissions; this expansion does not install independent agents or enforce a sandbox.

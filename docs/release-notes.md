@@ -1,13 +1,18 @@
-# AIEA 1.2.2 public preview
+# AIEA 1.3.0 public preview
 
 AIEA is an MIT-licensed portable engineering skill library for Claude Code, Codex,
-and OpenCode. This preview contains nine skills, plugin adapters for all three
+and OpenCode. This preview contains 17 skills, plugin adapters for all three
 hosts, and dependency-free distribution tools. It adds no orchestration runtime,
 automatic installer, hooks, telemetry, or benchmark runner.
 
 ## Changes
 
-- All nine skills now use a flat discovery layout and a validated core/specialist registry.
+- Expanded to ten core workflows with reconnaissance, requirements discovery, architecture design, task planning, implementation, and handoff.
+- Added testing and browser-QA read-only contracts, bringing specialist roles to seven.
+- Extended bootstrap routing and every host package to the 17-skill inventory.
+- Kept existing skill identifiers, least-privilege boundaries, and one lead writer.
+
+- All 17 skills now use a flat discovery layout and a validated core/specialist registry.
 - Bootstrap includes a portable discovery reference and reports missing skills honestly.
 - Explicit verification and bounded repair guidance connects the workflow stages.
 - Every host ZIP includes the MIT license, installation notes, and per-file hashes.
@@ -40,6 +45,8 @@ branch; these release assets are the versioned alternative.
 
 ## Evidence and limits
 
+Three representative manual exercises cover planning, source-only QA, and repair/handoff, with baseline comparisons. Both configurations met the scoped task expectations; these small checks do not establish superiority, automatic activation, or model-independent reliability. See the version-specific verification record.
+
 Offline regression checks cover layout, metadata, all six packages, license
 inclusion, hashes, subsets, reproducibility, and overwrite protection. CI runs
 these checks; review the result for the source commit being published.
@@ -66,5 +73,5 @@ are instructions, not installed agent processes, and read-only boundaries and
 repair budgets depend on host/model compliance. See the
 [verification record](https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/verification-status.md).
 
-This file describes the `v1.2.2` public preview. Building the bundle locally does
+This file describes the `v1.3.0` public preview. Building the bundle locally does
 not publish a GitHub release or certify additional behavioral checks.

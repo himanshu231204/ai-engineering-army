@@ -36,8 +36,21 @@ class DistributionTests(unittest.TestCase):
 
     def test_validation_and_groups(self):
         self.run_cli("validate")
-        for group, count in (("core", 4), ("specialists", 5)):
+        for group, count in (("core", 10), ("specialists", 7)):
             self.assertTrue(self.run_cli("list", "--group", group).stdout.strip().endswith(f"{count} skills"))
+
+    def test_expanded_inventory_and_discovery_cover_the_same_skills(self):
+        skills, errors = aiea.load_skills()
+        self.assertEqual(errors, [])
+        self.assertEqual(len(skills), 17)
+        added = {"repository-reconnaissance", "requirements-discovery", "architecture-design",
+                 "task-planning", "implementation-workflow", "integration-handoff",
+                 "testing-review", "browser-qa-review"}
+        self.assertTrue(added <= {skill.name for skill in skills})
+        reference = (aiea.SKILLS_ROOT / "aiea-bootstrap/references/discovery.md").read_text()
+        routed = {line.split("|")[1].strip() for line in reference.splitlines()
+                  if line.startswith("| ") and not line.startswith("| Skill name")}
+        self.assertEqual(routed, {skill.name for skill in skills})
 
     def test_codex_plugin_package_is_a_self_contained_local_marketplace(self):
         with zipfile.ZipFile(self.package("codex-plugin")) as archive:

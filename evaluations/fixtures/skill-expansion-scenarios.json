@@ -1,0 +1,23 @@
+{
+  "purpose": "Illustrative manual prompts for the 1.3 skill expansion; not a benchmark dataset, runner, or reliability score.",
+  "scenarios": [
+    {
+      "id": "planning-invitations",
+      "skills": ["repository-reconnaissance", "requirements-discovery", "architecture-design", "task-planning"],
+      "prompt": "Inspect a supplied Next.js/FastAPI/PostgreSQL sketch and plan owner-only project invitations accepted once by the invited user. Do not implement or run services. Cite the existing files, separate undecided expiry/provider/member rules, and return a bounded design and ordered plan with acceptance checks.",
+      "observe": ["source-backed scope", "unknowns are not invented requirements", "ordered tasks and proposed checks", "no implementation or claimed runtime pass"]
+    },
+    {
+      "id": "static-login-qa",
+      "skills": ["testing-review", "browser-qa-review"],
+      "prompt": "Review supplied login code and tests read-only. Success may redirect only to a same-origin path; failure stays on the form with an accessible error. No browser, app, screenshots, accounts, or interaction permission is available. Separate source findings and missing coverage from unrun runtime/browser checks.",
+      "observe": ["source evidence for redirect handling", "test-assertion limitations", "no invented browser observation", "read-only boundaries"]
+    },
+    {
+      "id": "repair-handoff",
+      "skills": ["implementation-workflow", "integration-handoff", "bounded-repair", "evidence-verification"],
+      "prompt": "Fix a disposable label helper to trim/lowercase strings, preserve internal spaces, and reject empty/whitespace strings. Run the existing tests before edits. Only the helper may change. Use at most two repairs, recheck each, and report actual commands/results, attempt count, patch state, and unresolved limits. Non-strings are out of scope.",
+      "observe": ["actual failing baseline", "only authorized helper changed", "tests retained and rechecked", "honest handoff and bounded attempts"]
+    }
+  ]
+}

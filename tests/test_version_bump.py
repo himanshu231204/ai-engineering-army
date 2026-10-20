@@ -134,9 +134,9 @@ class VersionRegistryTests(unittest.TestCase):
             "audit": {"exclude": []},
         }), encoding="utf-8")
         before = (root / "plugin.json").read_text(encoding="utf-8")
-        self.assertIn('"author": { "name":', before)
         current = aiea.VERSION_FILE.read_text(encoding="utf-8-sig").strip()
         aiea.run_version(root, new_version="9.9.9")
         after = (root / "plugin.json").read_text(encoding="utf-8")
+        # Only the version value changes; the rest of the manifest keeps its
+        # exact original formatting.
         self.assertEqual(before.replace(f'"{current}"', '"9.9.9"'), after)
-        self.assertIn('"author": { "name":', after)

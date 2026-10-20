@@ -52,6 +52,8 @@ REQUIRED_DOCS = (
     "docs/release-notes.md",
     "docs/getting-started.md",
     "docs/security.md",
+    "docs/skill-catalog.md",
+    "docs/specialist-contracts.md",
     "docs/contributing.md",
     "adapters/README.md",
     "adapters/claude-code/README.md",

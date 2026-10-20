@@ -11,7 +11,7 @@ AIEA targets project-local skills in Claude Code, Codex, and OpenCode. The porta
 ## Claude Code plugin distribution
 
 Version 1.1 additionally supports `aiea@aiea-marketplace`. The source manifest
-explicitly registers each canonical skill, including all five specialists. In 1.1.1 all canonical skills are direct children of `.agents/skills/` so the source layout also matches project discovery. The
+explicitly registers each canonical skill, including all seven specialists. In 1.1.1 all canonical skills are direct children of `.agents/skills/` so the source layout also matches project discovery. The
 `claude-code-plugin` package target uses `.claude-plugin/plugin.json` and
 `skills/<name>/SKILL.md`. This differs from the project-skill ZIP in the table.
 See [installation and verification](claude-code-plugin.md).

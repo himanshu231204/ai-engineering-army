@@ -10,7 +10,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 
 | Area | Version 1 behavior |
 |---|---|
-| Skill library | Four core workflows and five concise read-only specialist contracts in `.agents/skills/`. |
+| Skill library | Ten core workflows and seven concise read-only specialist contracts in `.agents/skills/`. |
 | Activation | Hybrid: native discovery when supported, bootstrap skill for manual discovery. |
 | Delegation | Bounded, independent read-only analysis may run in parallel; one active writer integrates changes. |
 | Completion | Evidence-based checks and a bounded repair loop with honest reporting. |
@@ -47,8 +47,10 @@ It does not include an orchestration engine, standalone agent, application, onli
 The early v0.1 discussion described the design milestone. The repository adopted
 1.0.0 for its initial framework source and 1.1.0 for plugin distribution; those
 existing labels are preserved. 1.1.1 records discovery and layout fixes and was
-never published separately; 1.2.0 is the latest release, tagged `v1.2.0`, adding
-Codex/OpenCode plugin adapters; 1.2.1 adds the tag-triggered release workflow.
+never published separately. The public preview 1.2.0, tagged `v1.2.0`, adds
+Codex/OpenCode plugin adapters; 1.2.1 adds the tag-triggered release workflow;
+1.2.2 adds the declarative version registry; 1.3.0 is the current candidate
+expanding workflow stages and specialist contracts to 17 skills.
 A version bump records a source/API change, not completion of
 behavioral evaluation. Changelog dates record source history; hosted release/tag
 status is checked separately using the release procedure.

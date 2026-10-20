@@ -37,6 +37,11 @@ membership and rejects nested skills. Packages do not need the maintenance regis
 
 Changes to canonical skills flow outward through packages. Host-specific instructions must not silently fork the workflow contract.
 
+Version 1.3 expands the library to ten core workflows and seven read-only
+specialist contracts. The [catalog](skill-catalog.md) maps lifecycle stages and
+roles. The [assignment contract](specialist-contracts.md) defines capabilities,
+permissions, evidence, and escalation; it does not install agent processes.
+
 ### 2. AIEA CLI
 
 `tools/aiea.py` is a local, dependency-free maintenance and packaging tool. It:
@@ -55,7 +60,7 @@ Hybrid activation means native discovery is the default when supported; `aiea-bo
 
 Version 1.1 also distributes the canonical skills as the `aiea` Claude Code
 plugin. The repository-root `.claude-plugin/plugin.json` explicitly registers
-all nine skill directories; `.claude-plugin/marketplace.json` catalogs that root
+all canonical skill directories; `.claude-plugin/marketplace.json` catalogs that root
 as `aiea@aiea-marketplace`. A standalone plugin ZIP is generated with the standard
 `skills/` layout. Both forms remain instruction-only host adapters; neither adds
 an orchestration engine. See [the plugin guide](claude-code-plugin.md).

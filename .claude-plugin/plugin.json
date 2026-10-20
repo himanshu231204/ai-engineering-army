@@ -1,6 +1,6 @@
 {
   "name": "aiea",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "AI Engineering Army: portable engineering workflows, controlled delegation, read-only reviews, evidence-based verification, and bounded repair.",
   "author": {
     "name": "AI Engineering Army contributors"
@@ -19,10 +19,18 @@
     "./.agents/skills/bounded-repair",
     "./.agents/skills/controlled-delegation",
     "./.agents/skills/evidence-verification",
+    "./.agents/skills/repository-reconnaissance",
+    "./.agents/skills/requirements-discovery",
+    "./.agents/skills/architecture-design",
+    "./.agents/skills/task-planning",
+    "./.agents/skills/implementation-workflow",
+    "./.agents/skills/integration-handoff",
     "./.agents/skills/architecture-review",
     "./.agents/skills/backend-review",
     "./.agents/skills/data-review",
     "./.agents/skills/frontend-review",
-    "./.agents/skills/security-review"
+    "./.agents/skills/security-review",
+    "./.agents/skills/testing-review",
+    "./.agents/skills/browser-qa-review"
   ]
 }

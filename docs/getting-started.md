@@ -1,6 +1,6 @@
 # Start using AIEA
 
-AIEA supplies nine engineering skills to your existing coding host. You need a
+AIEA supplies 17 engineering skills to your existing coding host. You need a
 working, authenticated Claude Code, Codex, or OpenCode installation. Model access,
 usage charges, tools, and permissions come from that host. AIEA adds no service,
 telemetry, credentials, hooks, or background agent.
@@ -33,7 +33,7 @@ Run this in Claude Code:
 ```
 
 Then send the first-task prompt below. The plugin guide lists
-[all nine commands](claude-code-plugin.md#skill-inventory).
+[all skill commands](claude-code-plugin.md#skill-inventory).
 
 ## Install in Codex or OpenCode
 

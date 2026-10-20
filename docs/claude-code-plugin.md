@@ -1,7 +1,7 @@
 # AIEA for Claude Code
 
 AIEA 1.1 adds a Claude Code plugin named `aiea` and a self-hosted marketplace
-named `aiea-marketplace`. The plugin exposes the same nine canonical skills as
+named `aiea-marketplace`. The current plugin exposes the same 17 canonical skills as
 the portable framework. It adds no hooks, background services, MCP servers,
 credentials, or permission changes. Specialist skills remain read-only guidance;
 installing them does not create autonomous subagent processes.
@@ -72,12 +72,20 @@ a separate submission; this repository does not claim that approval.
 | `/aiea:data-review` | Review data models, migrations, and integrity |
 | `/aiea:frontend-review` | Review UI behavior, accessibility, and state |
 | `/aiea:security-review` | Review authorization, inputs, secrets, and trust boundaries |
+| `/aiea:repository-reconnaissance` | Map relevant code, checks, constraints, and unknowns |
+| `/aiea:requirements-discovery` | Clarify behavior, acceptance examples, and material decisions |
+| `/aiea:architecture-design` | Propose component/API/data boundaries and tradeoffs |
+| `/aiea:task-planning` | Order substantial work with dependencies and checks |
+| `/aiea:implementation-workflow` | Implement authorized scope through one writer |
+| `/aiea:integration-handoff` | Report outcome, evidence, patch state, and next action |
+| `/aiea:testing-review` | Read-only assertion and regression-coverage review |
+| `/aiea:browser-qa-review` | Bounded user-journey review with browser evidence limits |
 
 ## Source and standalone ZIP layouts
 
 The repository is both marketplace root and plugin root (`source: "./"`).
 `.claude-plugin/plugin.json` explicitly lists each canonical skill directory,
-including all five specialists. Version 1.1.1 makes every canonical skill a direct
+including all seven specialists. Version 1.1.1 made every canonical skill a direct
 child of `.agents/skills/`; core/specialist groups live in `skill-registry.json`. All referenced files are inside the plugin root,
 so copying the repository into Claude Code's plugin cache preserves them. There
 are no symlinks or maintained skill copies.
@@ -110,7 +118,7 @@ application contains the AIEA source tree.
 
 1. Record `claude --version` and validate both marketplace and plugin manifests.
 2. Install from a disposable local marketplace and inspect `claude plugin details aiea`.
-   Confirm all nine skills, including all five specialists, appear.
+   Confirm all 17 skills, including all seven specialists, appear.
 3. In a separate disposable project, invoke `/aiea:aiea-bootstrap` with a read-only
    request. Confirm the skill loads, scopes the request, and reports evidence.
 4. Invoke `/aiea:security-review` on a small sample and confirm it makes no edits.
@@ -142,7 +150,7 @@ directory used to install it.
 - Model-driven skill invocation and remote GitHub installation have not been
   verified. No release tag or official directory submission has been made.
 
-For the current release, see [verification status](verification-status.md) and
+For current verification evidence, see [verification status](verification-status.md) and
 the [manual workflow procedure](workflow-validation.md).
 
 ## Official format references

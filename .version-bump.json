@@ -16,6 +16,7 @@
     ]
   },
   "must_mention": [
-    "docs/release-notes.md"
+    "docs/release-notes.md",
+    "README.md"
   ]
 }

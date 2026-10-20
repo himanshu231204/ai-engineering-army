@@ -2,7 +2,15 @@
 
 All notable AIEA changes are recorded here.
 
-## 1.2.2 - Unreleased
+## 1.3.0 - Unreleased
+
+- Expanded to ten core workflows with reconnaissance, requirements discovery, architecture design, task planning, implementation, and handoff.
+- Added testing and browser-QA specialists, bringing read-only specialist contracts to seven roles.
+- Extended discovery, Claude registration, and all host packages to 17 skills while preserving existing identifiers.
+- Documented specialist capabilities, permissions, evidence, failure escalation, and lead-only integration.
+- Added expanded-inventory/routing coverage and illustrative manual exercise prompts; native activation remains unverified.
+
+## 1.2.2 - 2026-10-20
 
 - Added a declarative version registry (`.version-bump.json`) that drives validation, drift detection, and version bumps from one place.
 - Added `aiea.py version` with `--check`, `--audit`, and bump modes; bumps rewrite only the version line and stay atomic when a declared file is unreadable.

@@ -15,4 +15,11 @@ Use this skill when a task begins, the needed workflow is unclear, or skill disc
 5. Establish the expected result and relevant checks before implementation. Implement through one active writer, then use evidence-verification. On a relevant failure, use bounded-repair: capture evidence, state an attempt budget, repair one cause, and recheck. Stop at the budget and report unresolved failures.
 6. Report the changes, evidence, and unresolved limitations in plain language.
 
+For unfamiliar or substantial work, select repository-reconnaissance,
+requirements-discovery, architecture-design, or task-planning only as the task
+needs. Use implementation-workflow for an authorized code change and
+integration-handoff for a reviewable finish. These stages are optional routing,
+not a requirement to load every core skill. Testing and browser QA are available
+as bounded read-only specialist contracts alongside the existing domain reviews.
+
 Host discovery can be native or manual. Do not claim a skill was activated by a host unless there is evidence it was loaded.

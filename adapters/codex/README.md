@@ -9,7 +9,7 @@ python tools/aiea.py package --host codex-plugin
 ```
 
 Extract the built `aiea-<version>-codex-plugin.zip` into a separate directory, keeping
-hidden folders. It includes `.codex-plugin/plugin.json`, the nine skills under
+hidden folders. It includes `.codex-plugin/plugin.json`, the 17 skills under
 `skills/`, and `.agents/plugins/marketplace.json`. From your terminal, run:
 
 ```sh

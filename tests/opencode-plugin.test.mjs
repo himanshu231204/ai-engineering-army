@@ -25,11 +25,11 @@ function context(existing = []) {
   };
 }
 
-test("registers all nine exact packaged bodies and absolute resource paths", async () => {
+test("registers all 17 exact packaged bodies and absolute resource paths", async () => {
   const ctx = context();
   await plugin.setup(ctx);
   assert.equal(plugin.id, "aiea");
-  assert.equal(ctx.skills.length, 9);
+  assert.equal(ctx.skills.length, 17);
   for (const skill of ctx.skills) {
     const source = await readFile(skill.path, "utf8");
     assert.equal(skill.content, source.replace(/^\uFEFF?---\r?\n[\s\S]*?\r?\n---[^\S\r\n]*\r?\n/, ""));

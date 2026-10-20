@@ -1,13 +1,72 @@
 {
   "skills": [
-    {"name": "aiea-bootstrap", "group": "core"},
-    {"name": "bounded-repair", "group": "core"},
-    {"name": "controlled-delegation", "group": "core"},
-    {"name": "evidence-verification", "group": "core"},
-    {"name": "architecture-review", "group": "specialists"},
-    {"name": "backend-review", "group": "specialists"},
-    {"name": "data-review", "group": "specialists"},
-    {"name": "frontend-review", "group": "specialists"},
-    {"name": "security-review", "group": "specialists"}
+    {
+      "name": "aiea-bootstrap",
+      "group": "core"
+    },
+    {
+      "name": "bounded-repair",
+      "group": "core"
+    },
+    {
+      "name": "controlled-delegation",
+      "group": "core"
+    },
+    {
+      "name": "evidence-verification",
+      "group": "core"
+    },
+    {
+      "name": "repository-reconnaissance",
+      "group": "core"
+    },
+    {
+      "name": "requirements-discovery",
+      "group": "core"
+    },
+    {
+      "name": "architecture-design",
+      "group": "core"
+    },
+    {
+      "name": "task-planning",
+      "group": "core"
+    },
+    {
+      "name": "implementation-workflow",
+      "group": "core"
+    },
+    {
+      "name": "integration-handoff",
+      "group": "core"
+    },
+    {
+      "name": "architecture-review",
+      "group": "specialists"
+    },
+    {
+      "name": "backend-review",
+      "group": "specialists"
+    },
+    {
+      "name": "data-review",
+      "group": "specialists"
+    },
+    {
+      "name": "frontend-review",
+      "group": "specialists"
+    },
+    {
+      "name": "security-review",
+      "group": "specialists"
+    },
+    {
+      "name": "testing-review",
+      "group": "specialists"
+    },
+    {
+      "name": "browser-qa-review",
+      "group": "specialists"
+    }
   ]
 }

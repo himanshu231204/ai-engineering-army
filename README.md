@@ -2,7 +2,7 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Current release:** [latest GitHub release](https://github.com/himanshu231204/ai-engineering-army/releases) · **License:** MIT
+**Source version:** `1.3.0` (public preview candidate; not yet a tagged release) · **License:** MIT
 
 Start with the [developer guide](docs/getting-started.md) for installation,
 your first task, and troubleshooting. Use explicit bootstrap activation for the
@@ -14,7 +14,7 @@ See [the evidence and limits](docs/verification-status.md).
 
 - A Claude Code marketplace/plugin adapter and standalone plugin ZIP.
 - A Codex plugin/local-marketplace ZIP and an optional OpenCode 2 skill-registration plugin.
-- Nine portable skills: four core workflow skills and five read-only specialist contracts.
+- Seventeen portable skills: ten core workflow skills and seven read-only specialist contracts.
 - A dependency-free Python CLI to validate and list skills and build ZIP packages for supported hosts.
 - Host compatibility guidance for native discovery and packaged skill locations.
 - Security, contribution, release, evaluation, and final architecture documentation.
@@ -32,7 +32,7 @@ install the version currently available on the repository default branch:
 
 Start with `/aiea:aiea-bootstrap`. To try a local checkout, use
 `claude --plugin-dir /path/to/ai-engineering-army` from a separate target project.
-See [plugin installation, all nine commands, and smoke checks](docs/claude-code-plugin.md).
+See [plugin installation, all skill commands, and smoke checks](docs/claude-code-plugin.md).
 No Python is needed to use the installed plugin; Python is for maintainer tooling.
 
 ## Codex and OpenCode plugins
@@ -82,9 +82,9 @@ Codex and OpenCode can also discover the canonical `.agents/skills/` directory d
 
 See [CLI usage](docs/cli.md), [host compatibility](docs/host-compatibility.md), and the [v1 definition of done](docs/version-1.md).
 
-Prebuilt archives for every host are attached to each
-[GitHub release](https://github.com/himanshu231204/ai-engineering-army/releases),
-along with `SHA256SUMS` for verification.
+Published preview packages are available from the
+[GitHub releases page](https://github.com/himanshu231204/ai-engineering-army/releases)
+with `SHA256SUMS`. The 1.3 candidate must be built or published separately.
 
 Maintainers can prepare all six packages, release notes, and checksums locally:
 
@@ -97,6 +97,18 @@ See [the release procedure](docs/release.md).
 
 See [verification status](docs/verification-status.md) for observed host checks and
 [manual workflow validation](docs/workflow-validation.md) for the repair/delegation checklist.
+
+## Workflows and specialist agents
+
+The [skill catalog](docs/skill-catalog.md) maps the engineering lifecycle: inspect,
+clarify, design as needed, plan substantial work, delegate bounded reviews,
+implement through one writer, verify/repair, and hand off. Load only relevant skills.
+
+Specialist contracts cover architecture, backend, data, frontend, security,
+testing, and browser QA. The [delegation contract](docs/specialist-contracts.md)
+defines inputs, permissions, evidence, and escalation. Hosts provide independent
+agent processes; without them, the lead applies contracts directly and reports
+that limitation. Browser QA distinguishes source analysis from live observations.
 
 ## Project principles
 

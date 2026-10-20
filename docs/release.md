@@ -86,6 +86,7 @@ Manual publishing remains available and is useful when the workflow cannot run:
 python tools/aiea.py release --output dist/release-<VERSION>
 gh release create v<VERSION> dist/release-<VERSION>/* --verify-tag --draft --prerelease --title "AIEA <VERSION>" --notes-file dist/release-<VERSION>/RELEASE-NOTES.md
 ```
+```
 
 These are publishing steps for the maintainer, not commands run by `aiea release`.
 If a tag already exists, inspect it rather than moving or replacing it. Build
