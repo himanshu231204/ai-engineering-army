@@ -10,9 +10,9 @@ skills. Source manifests passed validation with the contributor CLAUDE.md warnin
 the standalone ZIP passed native validation without warnings. Five distribution
 tests passed. Model-driven skill invocation was not verified in that check.
 
-## Current candidate
+## Current source
 
-1.1.1 is the next patch candidate. Its changes flatten canonical skill folders,
+1.1.1 source is on main at `a26e418`. Its changes flatten canonical skill folders,
 add a host-neutral registry and bootstrap discovery fallback, and make workflow
 validation explicit. See the final evidence below for checks performed during
 this change; unchecked behavior remains unverified.
@@ -31,10 +31,13 @@ this change; unchecked behavior remains unverified.
 Use [manual workflow validation](workflow-validation.md) to collect behavioral
 evidence. A blocked or unavailable host must be recorded as unrun, not passed.
 
-## Candidate check: 2026-10-20
+## Earlier candidate check: 2026-10-20
 
 Source baseline: `b90bfe1`, with the architecture-alignment changes described
 above. The changes are prepared as the local 1.1.1 candidate, not a published release.
+
+This historical check predates the live Codex exercise below. Its unrun results
+describe that earlier attempt; they do not override the later host-specific evidence.
 
 | Check | Observed result |
 |---|---|
@@ -56,3 +59,23 @@ Automatic approval review blocked a native Claude check after an attempted
 connection to an untrusted Datadog telemetry endpoint. The payload was unknown and
 could contain local/project metadata. No attempt was made to bypass that block.
 Historical 1.1.0 native-validation results above do not certify this candidate.
+
+## Subsequent live Codex check: 2026-10-20
+
+The [live workflow record](validation/2026-10-20-codex-live-workflow.md) documents
+an exercise against 1.1.1 source commit `a26e418`. AIEA skills were explicitly read
+through this Codex Work session's tools; automatic activation was not measured.
+
+| Check | Observed result |
+|---|---|
+| Baseline | Actual failure: empty and whitespace-only labels did not raise ValueError |
+| Delegation | Two independent, read-only specialist sessions returned scoped findings |
+| Review boundaries | Visible specialist calls were file reads; all four tracked target file hashes and the root file set were unchanged after review |
+| Integration | Both reviews finished before the lead edited; only the lead changed the helper |
+| Bounded repair | Attempt 1 of a declared budget of 2 produced passing checks |
+| Recheck | All three tests passed; tests and requirements remained byte-for-byte unchanged |
+| Automatic discovery and other hosts | Not established by this manually loaded Codex run |
+
+This closes the basic repair/delegation smoke check for the observed Codex run.
+Budget exhaustion, conflicting reports, independent-agent failures, missing-skill
+behavior, other hosts, and reference-application behavior remain unverified.
