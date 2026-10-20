@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 // OpenCode 2 consumes the default export's id and setup fields. Keeping this
 // adapter in plain JavaScript avoids a package install or SDK dependency.
 export default {
-  id: "aiea",
+  id: "ai-engineering-army",
   async setup(ctx) {
     if (typeof ctx.skill?.transform !== "function") {
       throw new Error("AIEA's plugin adapter requires OpenCode 2 skill transforms; use the portable skills ZIP on older hosts.");
@@ -17,7 +17,7 @@ export default {
       const path = fileURLToPath(new URL(`./skills/${name}/SKILL.md`, import.meta.url));
       const source = await readFile(path, "utf8");
       return {
-        id: `aiea:${name}`,
+        id: `ai-engineering-army:${name}`,
         name,
         description,
         autoinvoke: true,

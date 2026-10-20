@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS_ROOT = ROOT / ".agents" / "skills"
 VERSION_FILE = ROOT / "VERSION"
 BUMP_CONFIG = ".version-bump.json"
+PLUGIN_NAME = "ai-engineering-army"
 NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 FIELD_PATTERN = re.compile(r"^([a-z][a-z0-9_-]*):(?:[ \t]*(.*))?$")
 VERSION_PATTERN = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
@@ -226,38 +227,6 @@ def load_skills(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
     return skills, errors
 
 
-def _png_size(data: bytes) -> tuple[int, int] | None:
-    """Return the pixel size of a PNG header, or None when it is not a PNG."""
-    if not data.startswith(b"\x89PNG\r\n\x1a\n") or len(data) < 24 or data[12:16] != b"IHDR":
-        return None
-    return int.from_bytes(data[16:20], "big"), int.from_bytes(data[20:24], "big")
-
-
-def _icon_errors(root: Path, icon: object) -> list[str]:
-    """Check the listing icon against the directory's size and format rules."""
-    if icon is None:
-        return []
-    if not isinstance(icon, str) or not icon.startswith("./"):
-        return ["plugin icon must be a path inside the plugin folder"]
-    path = root / icon.removeprefix("./")
-    if not path.is_file():
-        return [f"plugin icon file is missing: {icon}"]
-    data = path.read_bytes()
-    if len(data) > 2 * 1024 * 1024:
-        return ["plugin icon must be under 2 MB"]
-    size = _png_size(data)
-    if size is None:
-        if data.startswith(b"\xff\xd8\xff"):
-            return []
-        return ["plugin icon must be a PNG or JPEG image"]
-    width, height = size
-    if width != height:
-        return ["plugin icon must be square"]
-    if not 512 <= width <= 2048:
-        return ["plugin icon must be between 512 and 2048 pixels on each side"]
-    return []
-
-
 def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
     """Check AIEA distribution invariants, not the entire Claude Code schema."""
     errors: list[str] = []
@@ -273,8 +242,8 @@ def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
             errors.append(f".claude-plugin/{name}.json: {error}")
     plugin = documents.get("plugin")
     if plugin is not None:
-        if plugin.get("name") != "aiea":
-            errors.append("plugin name must be aiea")
+        if plugin.get("name") != PLUGIN_NAME:
+            errors.append(f"plugin name must be {PLUGIN_NAME}")
         if plugin.get("version") != version:
             errors.append("plugin version must match VERSION")
         author = plugin.get("author")
@@ -282,7 +251,6 @@ def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
             errors.append("plugin must have an author name and description")
         if not plugin.get("displayName"):
             errors.append("plugin must have a displayName for the directory listing")
-        errors.extend(_icon_errors(root, plugin.get("icon")))
         expected = sorted("./" + skill.path.relative_to(root).as_posix() for skill in skills)
         paths = plugin.get("skills")
         if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
@@ -302,11 +270,19 @@ def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
         entries = marketplace.get("plugins")
         if (not isinstance(entries, list) or len(entries) != 1
                 or not isinstance(entries[0], dict)
-                or entries[0].get("name") != "aiea"
+                or entries[0].get("name") != PLUGIN_NAME
                 or entries[0].get("source") != "./"):
-            errors.append("marketplace must list aiea from ./")
+            errors.append(f"marketplace must list {PLUGIN_NAME} from ./")
         elif any(key in entries[0] for key in ("version", "skills", "strict")):
             errors.append("plugin.json owns the version and skill paths; do not override them in the marketplace")
+        renames = marketplace.get("renames")
+        if renames is not None:
+            if not isinstance(renames, dict) or not all(
+                    isinstance(old, str) and isinstance(new, (str, type(None)))
+                    for old, new in renames.items()):
+                errors.append("marketplace renames must map a former name to a current name or null")
+            elif PLUGIN_NAME not in renames.values():
+                errors.append(f"marketplace renames must map the former name to {PLUGIN_NAME}")
     return errors
 
 
@@ -342,7 +318,7 @@ def repository_errors(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
 def adapter_errors(root: Path, version: str) -> list[str]:
     errors: list[str] = []
     for relative, expected in (
-        (".codex-plugin/plugin.json", {"name": "aiea", "version": version, "skills": "./.agents/skills/"}),
+        (".codex-plugin/plugin.json", {"name": PLUGIN_NAME, "version": version, "skills": "./.agents/skills/"}),
         ("adapters/opencode/plugin/package.json", {"name": "aiea-opencode-plugin", "version": version,
                                                  "type": "module", "exports": "./index.js"}),
     ):
@@ -710,16 +686,13 @@ def command_package(args: argparse.Namespace) -> int:
         # The standalone bundle uses Claude Code's standard skills/ layout.
         plugin.pop("skills", None)
         add_payload(".claude-plugin/plugin.json", (json.dumps(plugin, indent=2) + "\n").encode("utf-8"))
-        icon = plugin.get("icon")
-        if isinstance(icon, str) and (ROOT / icon.removeprefix("./")).is_file():
-            add_payload(icon.removeprefix("./"), (ROOT / icon.removeprefix("./")).read_bytes())
     elif args.host == "codex-plugin":
         plugin = json.loads((ROOT / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
         plugin["skills"] = "./skills/"
         add_payload(".codex-plugin/plugin.json", (json.dumps(plugin, indent=2) + "\n").encode("utf-8"))
         marketplace = {
             "name": "aiea-marketplace", "interface": {"displayName": "AI Engineering Army"},
-            "plugins": [{"name": "aiea", "source": {"source": "local", "path": "./"},
+            "plugins": [{"name": PLUGIN_NAME, "source": {"source": "local", "path": "./"},
                          "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"},
                          "category": "Productivity"}],
         }
@@ -735,10 +708,10 @@ def command_package(args: argparse.Namespace) -> int:
     plugin_installation = {
         "claude-code-plugin":
         "Extract into a separate plugin directory, then run `claude --plugin-dir ./aiea-plugin` "
-        "using the extracted directory's actual path. In Claude Code invoke `/aiea:aiea-bootstrap`.\n\n",
+        "using the extracted directory's actual path. In Claude Code invoke `/ai-engineering-army:aiea-bootstrap`.\n\n",
         "codex-plugin":
         "Extract into a separate directory, keeping hidden folders. Run `codex plugin marketplace add /path/to/extracted-plugin` "
-        "then `codex plugin add aiea@aiea-marketplace`. Start a new session and request `aiea-bootstrap`. "
+        "then `codex plugin add ai-engineering-army@aiea-marketplace`. Start a new session and request `aiea-bootstrap`. "
         "These host commands update your plugin configuration.\n\n",
         "opencode-plugin":
         'Extract into a separate directory. In the target project, merge `"plugins": ["/absolute/path/to/extracted-plugin"]` '

@@ -10,7 +10,7 @@ AIEA targets project-local skills in Claude Code, Codex, and OpenCode. The porta
 
 ## Claude Code plugin distribution
 
-Version 1.1 additionally supports `aiea@aiea-marketplace`. The source manifest
+Version 1.1 additionally supports `ai-engineering-army@aiea-marketplace`. The source manifest
 explicitly registers each canonical skill, including all seven specialists. In 1.1.1 all canonical skills are direct children of `.agents/skills/` so the source layout also matches project discovery. The
 `claude-code-plugin` package target uses `.claude-plugin/plugin.json` and
 `skills/<name>/SKILL.md`. This differs from the project-skill ZIP in the table.
@@ -20,7 +20,7 @@ See [installation and verification](claude-code-plugin.md).
 
 | Target | Plugin layout | Activation |
 |---|---|---|
-| `codex-plugin` | `.codex-plugin/plugin.json`, `skills/`, local `.agents/plugins/marketplace.json` | Add the extracted local marketplace, install `aiea@aiea-marketplace`, and request bootstrap in a new session. |
+| `codex-plugin` | `.codex-plugin/plugin.json`, `skills/`, local `.agents/plugins/marketplace.json` | Add the extracted local marketplace, install `ai-engineering-army@aiea-marketplace`, and request bootstrap in a new session. |
 | `opencode-plugin` | `package.json`, `index.js`, `skills-index.json`, `skills/` | Add the extracted directory to OpenCode 2's `plugins` configuration; the adapter contributes skill definitions. |
 
 These ZIPs are extracted into separate directories, not into a target project.

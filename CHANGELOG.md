@@ -2,9 +2,15 @@
 
 All notable AIEA changes are recorded here.
 
+## 1.4.0 - Unreleased
+
+- Renamed the plugin from `aiea` to `ai-engineering-army` so the directory listing cannot be confused with existing short connector names. The marketplace maps the former name to the new one, so existing installs migrate instead of failing.
+- Moved the listing icon to the default location the directory looks for and removed every file reference to its path, so no script or setting points at an image file.
+- Added the directory listing fields `displayName`, `documentationUrl`, and `supportUrl`.
+
 ## 1.3.3 - Unreleased
 
-- Added a listing icon (`.claude-plugin/icon.png`) and the directory listing fields `displayName`, `icon`, `documentationUrl`, and `supportUrl`.
+- Added a listing icon for the plugin directory, plus the directory listing fields `displayName`, `documentationUrl`, and `supportUrl`.
 - Added validation that rejects a missing, non-square, out-of-range, oversized, or wrong-format listing icon, and a missing `displayName`.
 - Shipped the listing icon inside the Claude Code plugin ZIP.
 - Split the source-download instructions into a fetch step that runs nothing and a separate build step that asks the reader to review the files first.

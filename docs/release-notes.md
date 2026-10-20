@@ -1,4 +1,4 @@
-# AIEA 1.3.3 public release
+# AIEA 1.4.0 public release
 
 AIEA is an MIT-licensed portable engineering skill library for Claude Code, Codex,
 and OpenCode. This preview contains 17 skills, plugin adapters for all three
@@ -26,6 +26,7 @@ automatic installer, hooks, telemetry, or benchmark runner.
 - GitHub issue and pull request templates collect the submitting model and host, the reproduction steps, the commands run with their exit codes, and the human who reviewed the diff.
 - Every tagged version is published as a full public release, and a tag push now publishes one directly.
 - The plugin manifest now carries a listing icon, a display name, and documentation and support links for the official directory.
+- The plugin is now published as `ai-engineering-army`. The marketplace maps the previous `aiea` name to the new one, so existing installs migrate rather than fail.
 
 ## Choose an asset
 
@@ -35,7 +36,7 @@ automatic installer, hooks, telemetry, or benchmark runner.
 | `claude-code.zip` | Extract into a target project for `.claude/skills/` project skills. |
 | `codex.zip` | Extract into a target project for `.agents/skills/`. |
 | `opencode.zip` | Extract into a target project for `.agents/skills/`. |
-| `codex-plugin.zip` | Extract separately; add the directory with `codex plugin marketplace add`, then install `aiea@aiea-marketplace`. |
+| `codex-plugin.zip` | Extract separately; add the directory with `codex plugin marketplace add`, then install `ai-engineering-army@aiea-marketplace`. |
 | `opencode-plugin.zip` | Extract separately; add the directory to OpenCode 2's `plugins` config. |
 
 Compare the archive's SHA-256 with `SHA256SUMS` before extraction. Review existing
@@ -76,5 +77,5 @@ are instructions, not installed agent processes, and read-only boundaries and
 repair budgets depend on host/model compliance. See the
 [verification record](https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/verification-status.md).
 
-This file describes the `v1.3.3` public release. Building the bundle locally does
+This file describes the `v1.4.0` public release. Building the bundle locally does
 not publish a GitHub release or certify additional behavioral checks.

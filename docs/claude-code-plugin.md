@@ -1,6 +1,6 @@
 # AIEA for Claude Code
 
-AIEA 1.1 adds a Claude Code plugin named `aiea` and a self-hosted marketplace
+AIEA 1.1 adds a Claude Code plugin named `ai-engineering-army` and a self-hosted marketplace
 named `aiea-marketplace`. The current plugin exposes the same 17 canonical skills as
 the portable framework. It adds no hooks, background services, MCP servers,
 credentials, or permission changes. Specialist skills remain read-only guidance;
@@ -24,7 +24,7 @@ claude --plugin-dir /path/to/ai-engineering-army
 Replace that example path with your actual checkout. Inside Claude Code, run:
 
 ```text
-/aiea:aiea-bootstrap
+/ai-engineering-army:aiea-bootstrap
 ```
 
 For a complete local marketplace installation, run these shell commands from
@@ -32,9 +32,9 @@ the AIEA checkout:
 
 ```sh
 claude plugin marketplace add .
-claude plugin install aiea@aiea-marketplace --scope user
+claude plugin install ai-engineering-army@aiea-marketplace --scope user
 claude plugin list
-claude plugin details aiea
+claude plugin details ai-engineering-army
 ```
 
 These installation commands change the selected Claude Code configuration.
@@ -48,11 +48,11 @@ default branch. They will not install an unpublished local change.
 
 ```text
 /plugin marketplace add himanshu231204/ai-engineering-army
-/plugin install aiea@aiea-marketplace
+/plugin install ai-engineering-army@aiea-marketplace
 ```
 
 Review the installation scope in the plugin panel. After activating the plugin,
-run `/aiea:aiea-bootstrap` with your engineering task. Claude can also select a
+run `/ai-engineering-army:aiea-bootstrap` with your engineering task. Claude can also select a
 relevant skill by its description; automatic selection is model behavior, not a
 guarantee that every workflow runs on every task.
 
@@ -63,23 +63,23 @@ a separate submission; this repository does not claim that approval.
 
 | Invocation | Purpose |
 |---|---|
-| `/aiea:aiea-bootstrap` | Discover relevant skills and establish the task workflow |
-| `/aiea:controlled-delegation` | Scope independent reviews and keep one active writer |
-| `/aiea:evidence-verification` | Select checks and report observed results |
-| `/aiea:bounded-repair` | Diagnose and repair within an explicit attempt budget |
-| `/aiea:architecture-review` | Review boundaries, coupling, and data flow |
-| `/aiea:backend-review` | Review API and service behavior |
-| `/aiea:data-review` | Review data models, migrations, and integrity |
-| `/aiea:frontend-review` | Review UI behavior, accessibility, and state |
-| `/aiea:security-review` | Review authorization, inputs, secrets, and trust boundaries |
-| `/aiea:repository-reconnaissance` | Map relevant code, checks, constraints, and unknowns |
-| `/aiea:requirements-discovery` | Clarify behavior, acceptance examples, and material decisions |
-| `/aiea:architecture-design` | Propose component/API/data boundaries and tradeoffs |
-| `/aiea:task-planning` | Order substantial work with dependencies and checks |
-| `/aiea:implementation-workflow` | Implement authorized scope through one writer |
-| `/aiea:integration-handoff` | Report outcome, evidence, patch state, and next action |
-| `/aiea:testing-review` | Read-only assertion and regression-coverage review |
-| `/aiea:browser-qa-review` | Bounded user-journey review with browser evidence limits |
+| `/ai-engineering-army:aiea-bootstrap` | Discover relevant skills and establish the task workflow |
+| `/ai-engineering-army:controlled-delegation` | Scope independent reviews and keep one active writer |
+| `/ai-engineering-army:evidence-verification` | Select checks and report observed results |
+| `/ai-engineering-army:bounded-repair` | Diagnose and repair within an explicit attempt budget |
+| `/ai-engineering-army:architecture-review` | Review boundaries, coupling, and data flow |
+| `/ai-engineering-army:backend-review` | Review API and service behavior |
+| `/ai-engineering-army:data-review` | Review data models, migrations, and integrity |
+| `/ai-engineering-army:frontend-review` | Review UI behavior, accessibility, and state |
+| `/ai-engineering-army:security-review` | Review authorization, inputs, secrets, and trust boundaries |
+| `/ai-engineering-army:repository-reconnaissance` | Map relevant code, checks, constraints, and unknowns |
+| `/ai-engineering-army:requirements-discovery` | Clarify behavior, acceptance examples, and material decisions |
+| `/ai-engineering-army:architecture-design` | Propose component/API/data boundaries and tradeoffs |
+| `/ai-engineering-army:task-planning` | Order substantial work with dependencies and checks |
+| `/ai-engineering-army:implementation-workflow` | Implement authorized scope through one writer |
+| `/ai-engineering-army:integration-handoff` | Report outcome, evidence, patch state, and next action |
+| `/ai-engineering-army:testing-review` | Read-only assertion and regression-coverage review |
+| `/ai-engineering-army:browser-qa-review` | Bounded user-journey review with browser evidence limits |
 
 ## Source and standalone ZIP layouts
 
@@ -117,11 +117,11 @@ application contains the AIEA source tree.
 ## Smoke check and updates
 
 1. Record `claude --version` and validate both marketplace and plugin manifests.
-2. Install from a disposable local marketplace and inspect `claude plugin details aiea`.
+2. Install from a disposable local marketplace and inspect `claude plugin details ai-engineering-army`.
    Confirm all 17 skills, including all seven specialists, appear.
-3. In a separate disposable project, invoke `/aiea:aiea-bootstrap` with a read-only
+3. In a separate disposable project, invoke `/ai-engineering-army:aiea-bootstrap` with a read-only
    request. Confirm the skill loads, scopes the request, and reports evidence.
-4. Invoke `/aiea:security-review` on a small sample and confirm it makes no edits.
+4. Invoke `/ai-engineering-army:security-review` on a small sample and confirm it makes no edits.
 5. Load an extracted plugin ZIP without the original checkout and repeat discovery.
 
 Structural checks and inventory discovery do not prove model behavior. Record
@@ -130,10 +130,10 @@ the plugin manifest version, push the release, then users can run:
 
 ```text
 /plugin marketplace update aiea-marketplace
-/plugin update aiea@aiea-marketplace
+/plugin update ai-engineering-army@aiea-marketplace
 ```
 
-To remove a test installation, use `claude plugin uninstall aiea@aiea-marketplace`
+To remove a test installation, use `claude plugin uninstall ai-engineering-army@aiea-marketplace`
 and `claude plugin marketplace remove aiea-marketplace` with the same configuration
 directory used to install it.
 

@@ -58,10 +58,10 @@ Each host can discover skills using its own directory conventions. AIEA keeps on
 
 Hybrid activation means native discovery is the default when supported; `aiea-bootstrap` describes manual discovery for sessions where that is unavailable or unclear. AIEA never claims a host loaded a skill without evidence.
 
-Version 1.1 also distributes the canonical skills as the `aiea` Claude Code
+Version 1.1 also distributes the canonical skills as the `ai-engineering-army` Claude Code
 plugin. The repository-root `.claude-plugin/plugin.json` explicitly registers
 all canonical skill directories; `.claude-plugin/marketplace.json` catalogs that root
-as `aiea@aiea-marketplace`. A standalone plugin ZIP is generated with the standard
+as `ai-engineering-army@aiea-marketplace`. A standalone plugin ZIP is generated with the standard
 `skills/` layout. Both forms remain instruction-only host adapters; neither adds
 an orchestration engine. See [the plugin guide](claude-code-plugin.md).
 

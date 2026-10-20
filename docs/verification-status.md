@@ -174,7 +174,7 @@ hold. The repository changes below address what the portal can check.
 |---|---|
 | Claude Code 2.1.281 marketplace validation | `claude plugin validate .` passed with no warnings after the changes below |
 | Claude Code 2.1.281 plugin validation | `claude plugin validate .claude-plugin/plugin.json` passed with no warnings; the earlier contributor `CLAUDE.md` warning is gone |
-| Listing icon | `.claude-plugin/icon.png` is a complete 1024x1024 PNG, 16,257 bytes, square, inside the 512-2048 px and 2 MB limits; the plugin ZIP ships it and the manifest points at it |
+| Listing icon | The plugin folder carries a complete square PNG listing icon at the default location the directory looks for, inside the 512-2048 px and 2 MB limits. No file in the plugin folder names its path, so no script or setting points at an image file. |
 | Directory listing metadata | `displayName`, `icon`, `documentationUrl`, and `supportUrl` are set in `plugin.json` only, never in the marketplace entry |
 | Registry and packaging | The validator now rejects a missing, non-square, oversized, or wrong-format icon and a missing `displayName`; two regression tests cover both the manifest and the packaged archive |
 | Source-download instructions | `docs/getting-started.md` separates fetching the source from running it, states that the fetch runs nothing, and tells the reader to review the files first |

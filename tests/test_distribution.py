@@ -55,7 +55,7 @@ class DistributionTests(unittest.TestCase):
     def test_codex_plugin_package_is_a_self_contained_local_marketplace(self):
         with zipfile.ZipFile(self.package("codex-plugin")) as archive:
             plugin = json.loads(archive.read(".codex-plugin/plugin.json"))
-            self.assertEqual(plugin["name"], "aiea")
+            self.assertEqual(plugin["name"], aiea.PLUGIN_NAME)
             self.assertEqual(plugin["skills"], "./skills/")
             market = json.loads(archive.read(".agents/plugins/marketplace.json"))
             self.assertEqual(market["name"], "aiea-marketplace")
@@ -156,7 +156,7 @@ class DistributionTests(unittest.TestCase):
                     self.assertEqual(archive.read(f"{prefix}/{skill.name}/SKILL.md"), (skill.path / "SKILL.md").read_bytes())
                 if host == "claude-code-plugin":
                     plugin = json.loads(archive.read(".claude-plugin/plugin.json"))
-                    self.assertEqual(plugin["name"], "aiea")
+                    self.assertEqual(plugin["name"], aiea.PLUGIN_NAME)
                     self.assertEqual(plugin["version"], manifest["version"])
                     self.assertNotIn("skills", plugin)  # No checkout-relative paths.
                     self.assertIn("LICENSE", archive.namelist())
@@ -236,30 +236,22 @@ class DistributionTests(unittest.TestCase):
         self.run_cli("release", "--output", str(empty), code=2)
         self.assertEqual(list(empty.iterdir()), [])
 
-    def test_plugin_manifest_carries_listing_metadata_and_a_valid_icon(self):
+    def test_plugin_manifest_carries_listing_metadata(self):
         plugin = json.loads((aiea.ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
         self.assertTrue(plugin.get("displayName"), "the directory listing needs a displayName")
         self.assertTrue(plugin.get("description"))
-        icon = plugin.get("icon")
-        self.assertTrue(icon, "the directory listing needs an icon")
-        self.assertTrue(icon.startswith("./"))
-        icon_path = aiea.ROOT / icon.removeprefix("./")
-        self.assertTrue(icon_path.is_file())
-        data = icon_path.read_bytes()
-        self.assertLess(len(data), 2 * 1024 * 1024, "the listing icon must be under 2 MB")
-        size = aiea._png_size(data)
-        self.assertIsNotNone(size, "the listing icon must be a PNG")
-        width, height = size
-        self.assertEqual(width, height, "the listing icon must be square")
-        self.assertTrue(512 <= width <= 2048, "the listing icon must be 512 to 2048 pixels wide")
+        self.assertTrue(plugin.get("documentationUrl"), "the directory listing needs a documentation link")
+        self.assertTrue(plugin.get("supportUrl"), "the directory listing needs a support link")
 
-    def test_plugin_zip_ships_the_listing_icon(self):
-        with zipfile.ZipFile(self.package("claude-code-plugin")) as archive:
-            plugin = json.loads(archive.read(".claude-plugin/plugin.json"))
-            icon = plugin["icon"].removeprefix("./")
-            self.assertIn(icon, archive.namelist())
-            self.assertEqual(archive.read(icon),
-                             (aiea.ROOT / icon).read_bytes())
+    def test_marketplace_migrates_the_previous_plugin_name(self):
+        marketplace = json.loads(
+            (aiea.ROOT / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
+        renames = marketplace.get("renames")
+        self.assertIsInstance(renames, dict)
+        self.assertIn("aiea", renames)
+        self.assertEqual(renames["aiea"], aiea.PLUGIN_NAME)
+        entry = marketplace["plugins"][0]
+        self.assertEqual(entry["name"], aiea.PLUGIN_NAME)
 
     def test_rejects_manifest_drift(self):
         root = self.output / "repo"
@@ -280,7 +272,7 @@ class DistributionTests(unittest.TestCase):
         path.write_text(json.dumps(original))
         marketplace = root / ".claude-plugin/marketplace.json"
         original_market = json.loads(marketplace.read_text())
-        for plugins in ([], [{"name": "aiea", "source": "./missing"}], None):
+        for plugins in ([], [{"name": aiea.PLUGIN_NAME, "source": "./missing"}], None):
             marketplace.write_text(json.dumps(original_market | {"plugins": plugins}))
             self.assertTrue(aiea.plugin_errors(root, skills, version))
         marketplace.write_text(json.dumps(original_market))

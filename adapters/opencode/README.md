@@ -28,7 +28,7 @@ bundled skills required by the entrypoint.
 The adapter targets the OpenCode 2 `id`/`setup` plugin contract and
 `ctx.skill.transform` API. It reads only its bundled index and skill files, then
 registers names, descriptions, absolute resource paths, and skill bodies. Names
-remain the canonical names; registry IDs use `aiea:<skill-name>`. Eligible skills
+remain the canonical names; registry IDs use `ai-engineering-army:<skill-name>`. Eligible skills
 can be selected by the host (`autoinvoke: true`); registration does not prove that
 the host selected a skill or that the model followed it.
 

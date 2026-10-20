@@ -16,7 +16,7 @@ In an interactive Claude Code session, run:
 
 ```text
 /plugin marketplace add himanshu231204/ai-engineering-army
-/plugin install aiea@aiea-marketplace
+/plugin install ai-engineering-army@aiea-marketplace
 ```
 
 Review the scope offered by Claude Code, then start a new session in your target
@@ -29,7 +29,7 @@ project using `claude --plugin-dir /absolute/path/to/extracted-plugin`.
 Run this in Claude Code:
 
 ```text
-/aiea:aiea-bootstrap
+/ai-engineering-army:aiea-bootstrap
 ```
 
 Then send the first-task prompt below. The plugin guide lists

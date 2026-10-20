@@ -14,7 +14,7 @@ hidden folders. It includes `.codex-plugin/plugin.json`, the 17 skills under
 
 ```sh
 codex plugin marketplace add /absolute/path/to/extracted-aiea
-codex plugin add aiea@aiea-marketplace
+codex plugin add ai-engineering-army@aiea-marketplace
 ```
 
 Use the extracted directory's actual path. These host commands change your Codex
@@ -32,7 +32,7 @@ is not the Codex installation command, and no public OpenAI directory listing or
 remote Codex marketplace installation is claimed.
 
 Use either project skills or the plugin in a target project to avoid duplicate
-names. To uninstall, run `codex plugin remove aiea@aiea-marketplace`; inspect
+names. To uninstall, run `codex plugin remove ai-engineering-army@aiea-marketplace`; inspect
 `codex plugin remove --help` for your installed client. Remove the marketplace
 only if no other installation uses it.
 

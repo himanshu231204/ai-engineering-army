@@ -52,7 +52,7 @@ initial reference stack, not mandatory dependencies or default generated code.
 
 ## Loading on each host
 
-- Claude plugin: `/aiea:<skill-name>`, for example `/aiea:testing-review`.
+- Claude plugin: `/ai-engineering-army:<skill-name>`, for example `/ai-engineering-army:testing-review`.
 - Other clients: select the name exposed by the host, or ask it to read the
   installed `SKILL.md` explicitly when native loading is unavailable.
 - With independent agents: the lead gives each specialist the actual skill,

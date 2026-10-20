@@ -2,7 +2,7 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.3.3` (public release) · **License:** MIT
+**Source version:** `1.4.0` (public release) · **License:** MIT
 
 Start with the [developer guide](docs/getting-started.md) for installation,
 your first task, and troubleshooting. Use explicit bootstrap activation for the
@@ -36,10 +36,10 @@ install the version currently available on the repository default branch:
 
 ```text
 /plugin marketplace add himanshu231204/ai-engineering-army
-/plugin install aiea@aiea-marketplace
+/plugin install ai-engineering-army@aiea-marketplace
 ```
 
-Start with `/aiea:aiea-bootstrap`. To try a local checkout, use
+Start with `/ai-engineering-army:aiea-bootstrap`. To try a local checkout, use
 `claude --plugin-dir /path/to/ai-engineering-army` from a separate target project.
 See [plugin installation, all skill commands, and smoke checks](docs/claude-code-plugin.md).
 No Python is needed to use the installed plugin; Python is for maintainer tooling.
@@ -54,7 +54,7 @@ python tools/aiea.py package --host opencode-plugin
 ```
 
 Extract each ZIP into its own directory. For Codex, add the extracted local
-marketplace and install `aiea@aiea-marketplace`. For OpenCode 2, add the extracted
+marketplace and install `ai-engineering-army@aiea-marketplace`. For OpenCode 2, add the extracted
 directory to your project's `plugins` configuration. Follow the exact commands
 in the [Codex adapter](adapters/codex/README.md) or
 [OpenCode adapter](adapters/opencode/README.md). Keep either plugin or project

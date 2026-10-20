@@ -2,9 +2,10 @@
   "name": "aiea-marketplace",
   "description": "Portable AI Engineering Army workflows for Claude Code.",
   "owner": { "name": "AI Engineering Army contributors" },
+  "renames": { "aiea": "ai-engineering-army" },
   "plugins": [
     {
-      "name": "aiea",
+      "name": "ai-engineering-army",
       "source": "./",
       "description": "AI Engineering Army workflows and read-only specialist reviews."
     }

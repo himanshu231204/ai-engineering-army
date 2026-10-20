@@ -5,7 +5,7 @@
 The `aiea` plugin and `aiea-marketplace` catalog live in `.claude-plugin/` at the
 repository root. The plugin references every canonical skill directory directly,
 including specialists, without duplicating portable content. Plugin commands
-use the `aiea:` namespace. See [installation and smoke checks](../../docs/claude-code-plugin.md).
+use the `ai-engineering-army:` namespace. See [installation and smoke checks](../../docs/claude-code-plugin.md).
 
 For a standalone plugin distribution:
 
