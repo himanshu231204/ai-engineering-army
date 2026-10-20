@@ -20,6 +20,28 @@ Give every specialist these fields, scaled to the task:
 | Verification | Actual commands/observations and limits; proposed checks are not executed results. |
 | Escalation | Missing inputs, unsafe side effects, conflicts, failure, or a reached time/attempt budget. |
 
+## Shared run accounting and outcome
+
+When a review participates in a larger run, carry stable failure IDs, repair
+reservations, counts, and limits from its run ledger unchanged. Read-only work
+consumes no repair attempts. Specialists must not reset or increase limits. If
+prior counters are unavailable, report that repairs are blocked until the lead
+recovers the record. The reusable template is in bootstrap's
+`references/run-ledger.md`; standalone specialist installations use these
+definitions without requiring that sibling resource.
+
+Each scoped report chooses exactly one terminal outcome:
+
+- **Failed:** a required check confirms a remaining defect.
+- **Blocked:** no confirmed failure takes precedence, but an external
+  prerequisite prevents completion.
+- **Inconclusive:** evidence is insufficient, stale, flaky, or conflicting.
+- **Verified:** all required checks in the stated scope pass at final state.
+
+Return outcome, scope/revision, findings, actual evidence, repair counts/limits
+when applicable, limitations, and next action. A static review cannot imply
+verified runtime behavior.
+
 Read-only is broader than “do not edit source”: tests may write files/databases,
 and browser navigation or form submission may change remote state. Use supplied
 source/log evidence unless the assignment explicitly permits a safe check.

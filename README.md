@@ -2,15 +2,15 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.4.3` (public release) · **License:** MIT
+**Source version:** `1.5.0` (public release) · **License:** MIT
 
 **Documentation:** [developer guide](docs/getting-started.md) · **Support:** [GitHub issues](https://github.com/himanshu231204/ai-engineering-army/issues) · **Security:** [security policy](SECURITY.md)
 
 Start with the [developer guide](docs/getting-started.md) for installation,
-your first task, and troubleshooting. Use explicit bootstrap activation for the
-preview. Packaging and bounded Codex Work exercises have been checked; automatic
-activation and completed native Claude/OpenCode model workflows remain unverified.
-See [the evidence and limits](docs/verification-status.md).
+your first task, and troubleshooting. Use explicit bootstrap activation when
+you want to select the workflow directly. Structural packaging and historical
+host exercises do not establish automatic activation or current native host
+behavior; see [the evidence and limits](docs/verification-status.md).
 
 **What this plugin reads, writes, and sends.** The plugin declares seventeen
 skills and nothing else: no hooks, no MCP servers, no commands, no agents, no
@@ -103,9 +103,9 @@ Codex and OpenCode can also discover the canonical `.agents/skills/` directory d
 
 See [CLI usage](docs/cli.md), [host compatibility](docs/host-compatibility.md), and the [v1 definition of done](docs/version-1.md).
 
-Published preview packages are available from the
+Published packages are available from the
 [GitHub releases page](https://github.com/himanshu231204/ai-engineering-army/releases)
-with `SHA256SUMS`. The 1.3 candidate must be built or published separately.
+with `SHA256SUMS`. Local unreleased source changes are not published artifacts.
 
 Maintainers can prepare all six packages, release notes, and checksums locally:
 
@@ -136,7 +136,7 @@ that limitation. Browser QA distinguishes source analysis from live observations
 - **Portable skills first:** canonical sources live in `.agents/skills/` and use the [Agent Skills format](https://agentskills.io/specification).
 - **Hybrid activation:** use a host's native discovery where available; bootstrap guidance helps when activation is manual or inconsistent.
 - **Controlled delegation:** independent read-only specialists may analyze in parallel; one lead integrates changes as the sole active writer.
-- **Evidence-based completion:** report checks and results, and keep repairs bounded.
+- **Evidence-based completion:** keep a run ledger in session by default, reserve repairs before changes (two per failure and five per run by default), and report one scoped outcome with evidence and limits.
 - **Least privilege:** skills provide instructions; they do not grant tools, credentials, or permissions.
 - **Optional runtime later:** managed coordination may be considered separately without making skills depend on it.
 

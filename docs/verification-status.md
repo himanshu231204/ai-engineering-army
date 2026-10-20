@@ -204,3 +204,60 @@ plugin components and no host component invokes them.
 
 Directory review decides what goes live. Native automatic activation of the
 skills remains unverified, as recorded above.
+
+## Run ledger and scoped workflow candidate: 2026-10-20
+
+This local candidate adds session-first run accounting, default repair limits,
+standard scoped outcomes, a ten-case host procedure, and package regression
+coverage. Historical host exercises above are context only and do not verify
+these changes. Source base: `0b6465ac888885b1d27c0b10bd520e7a692aee48` plus
+the run-ledger working-tree changes, published as version 1.5.0. The native
+host cases below remain unrun or blocked; no automatic-activation or repair
+pass is claimed.
+
+| Check | Observed result |
+|---|---|
+| Claude Code version/native run | Blocked before version output: PowerShell refused to execute the installed `claude.ps1` under the current script-execution policy. No policy workaround was attempted. Native package loading, explicit/automatic activation, delegation, repair limits, resume, fallback, and outcome integrity are unrun. |
+| Codex version | `codex-cli 0.163.0`; `codex exec --help` was available. |
+| Codex fresh-session automatic activation | Blocked. A fresh ephemeral `codex exec` used a generic prompt that did not mention AIEA or any skill, against a disposable fixture whose baseline had two failing checks. The host could not connect to the Responses API WebSocket (Windows socket access denied, error 10013) and its HTTPS fallback also failed before a model/tool/skill trace. No repair or automatic activation pass is claimed. |
+| OpenCode version/native run | Blocked before version output: PowerShell refused to execute the installed `opencode.ps1` under the current script-execution policy. No policy workaround was attempted. All native OpenCode cases are unrun. |
+| Candidate native package loading and explicit activation | Unrun for all three hosts; no successful host inventory or activation trace was obtained for this candidate. |
+| Historical evidence | Earlier Codex Work exercises, Claude structure checks, and offline OpenCode adapter tests remain scoped to their recorded revisions and do not prove behavior for this candidate. |
+
+The exact Codex automatic-activation prompt was: “Inspect the failing checks and
+repair the implementation while preserving the tests. Report the commands you
+ran and their outcomes.” Baseline command `python test_labels.py` in a disposable
+fixture ran four checks and failed the empty-string and whitespace-only rejection
+checks (two failures; `ValueError` was not raised). The trace shows `codex-cli
+0.163.0`, a fresh ephemeral session, WebSocket `os error 10013`, and failed HTTPS
+fallback; no model response, tool call, skill selection, source edit, or final
+check was observed. The unchanged fixture was not counted as a host repair.
+
+The final local structural candidate packages were built from this source tree
+with `python tools/aiea.py package --host <target> --output
+.tmp/packages-run-ledger-final` after the subset-install documentation fix.
+Their SHA-256 checksums are:
+
+| Target | Archive checksum |
+|---|---|
+| `claude-code` | `A095F4E1C5936F0AE1CCED196009790CA236BDE2B92152EB6556AF5E9F7CD89D` |
+| `claude-code-plugin` | `2F9628A8B6AC9BB4913DEF5C7475E07A851D6EE6125922A3CB0F6611F25E941D` |
+| `codex` | `67D18D968B6EF68742F644DB92A8F339968BF06BF0419D4C6F221FC3290AA919` |
+| `codex-plugin` | `5CEBA8D82B3DF1C4402F1AECED80F9C737FF2B7F7BE5B7ACE252530F765E3394` |
+| `opencode` | `9EBB6754AA6250CFC78963C4CAAF045B01221535B8AAD673A784A826BC00208D` |
+| `opencode-plugin` | `034D8013A741FCBB6568F0FE569E64729CC8C6E60604E307E6D899FBF427B115` |
+
+Local checks for this candidate: `python tools/aiea.py validate` passed for 17
+skills; `python tools/aiea.py version --audit` passed with all declared files
+at 1.5.0 and no undeclared version references; `python -m unittest discover -s
+tests -v` passed all 40 tests. The first test run exposed an output-directory
+collision in the new test; it was corrected by building the two modes into
+separate temporary directories, and the final suite passed. All six package
+commands completed and included 17 skills. The regression specifically checks
+the run-ledger bytes and manifest SHA-256 for full and bootstrap-only packages
+on every target.
+
+The host verification cases and prompts are repeatable in
+[manual workflow validation](workflow-validation.md). When a host is unavailable,
+unrun cases remain visible; offline packaging results do not upgrade them to
+passes.

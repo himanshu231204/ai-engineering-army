@@ -2,29 +2,38 @@
 
 All notable AIEA changes are recorded here.
 
-## 1.4.3 - Unreleased
+## 1.5.0 - Unreleased
+
+- Added a reusable bootstrap ledger for revisions, actual skill loads, acceptance evidence, repair history, blockers, and scoped handoffs; it remains in session unless persistence is authorized.
+- Standardized two repair attempts per failure and five per run by default, with reservation-before-change and stable accounting across handoffs and resumes.
+- Standardized scoped outcomes and handoff evidence across core workflows and all seven specialists.
+- Added a repeatable host procedure separating loading, explicit and automatic activation, delegation, repair/exhaustion, resumed accounting, missing-skill fallback, and outcome integrity.
+- Added regression coverage for ledger contents and manifest hashes in full and bootstrap-only packages across all six targets.
+- Removed stale README preview and 1.3-candidate wording.
+
+## 1.4.3 - 2026-10-20
 
 - Stated in the README exactly what the plugin reads, writes, and sends, matching the data-handling answers in the directory submission form.
 - Recorded the data-handling declarations in the verification status, with the evidence behind each answer.
 - Fixed a duplicated word in the README plugin description.
 
-## 1.4.2 - Unreleased
+## 1.4.2 - 2026-10-20
 
 - Removed the directory-only fields `documentationUrl` and `supportUrl` from the plugin manifest. Claude Code ignores them, and the plugin directory reports them as unrecognized fields.
 - Pointed `homepage` at the developer guide, which is the field Claude Code reads as the documentation URL.
 - Added validation that rejects directory-only fields in the manifest, and surfaced documentation and support links in the README, which the directory uses as the listing description.
 
-## 1.4.1 - Unreleased
+## 1.4.1 - 2026-10-20
 
 - Rewrote the source-build instructions in the developer guide so no shell block fetches and then executes code, and pointed at the project page for obtaining the source.
 
-## 1.4.0 - Unreleased
+## 1.4.0 - 2026-10-20
 
 - Renamed the plugin from `aiea` to `ai-engineering-army` so the directory listing cannot be confused with existing short connector names. The marketplace maps the former name to the new one, so existing installs migrate instead of failing.
 - Moved the listing icon to the default location the directory looks for and removed every file reference to its path, so no script or setting points at an image file.
 - Added the directory listing fields `displayName`, `documentationUrl`, and `supportUrl`.
 
-## 1.3.3 - Unreleased
+## 1.3.3 - 2026-10-20
 
 - Added a listing icon for the plugin directory, plus the directory listing fields `displayName`, `documentationUrl`, and `supportUrl`.
 - Added validation that rejects a missing, non-square, out-of-range, oversized, or wrong-format listing icon, and a missing `displayName`.
@@ -33,7 +42,7 @@ All notable AIEA changes are recorded here.
 - Removed the root `CLAUDE.md` and merged its guidance into `AGENTS.md`, which Claude Code reads natively, clearing the plugin validator warning.
 - Documented what the plugin runs, sends, and fetches in the README.
 
-## 1.3.2 - Unreleased
+## 1.3.2 - 2026-10-20
 
 - Published every tagged version as a full public release instead of a prerelease, so the Releases section lists them without prerelease badges.
 - Changed the release workflow to publish full releases on a tag push; the `prerelease` input remains available for candidates that need one.

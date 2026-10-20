@@ -33,3 +33,5 @@ authorization are missing, report the browser check as unrun and provide a
 static review or proposed checklist. Never invent clicks, screenshots, loaded
 skills, or passing journeys. Escalate unsafe side effects or uncertain identity
 to the lead; do not repair the app during a review.
+
+**Outcome and handoff:** Report exactly one scoped outcome: Failed only when a required check confirms a remaining defect; Blocked when an external prerequisite prevents completion and no confirmed failure takes precedence; Inconclusive when evidence is insufficient, stale, flaky, or conflicting; Verified only when every required check in this review's scope passes at final state. Include scope/revision, findings, actual observations, repair counts/limits if applicable, limitations, and next action. Static review does not verify browser behavior. Preserve supplied run-ledger failure IDs and counters; read-only analysis consumes no repair attempts.

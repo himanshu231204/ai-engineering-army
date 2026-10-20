@@ -9,11 +9,25 @@ license: MIT
 Use this skill when a task begins, the needed workflow is unclear, or skill discovery is manual.
 
 1. Read the user's goal, constraints, repository guidance, and current working-tree state before proposing work.
+   Start a session run ledger from [the reusable template](references/run-ledger.md).
+   Keep it in session by default; persist it only within the user's authorized
+   scope, and never record secrets or personal data. Carry its failure IDs and
+   repair counters through reloads, delegation, handoffs, and resumed sessions.
 2. Inspect the host's available skill names and descriptions. Select only those relevant to the task; load their `SKILL.md` bodies on demand. If the inventory is unavailable or incomplete, read [the discovery reference](references/discovery.md) beside this skill and resolve only the needed sibling skills. Report missing skills instead of claiming activation.
 3. If specialists could help, use the controlled-delegation contract. State the bounded question, inputs, and read-only scope for each specialist.
 4. Summarize the approach and important uncertainty. Keep routine, reversible work moving; ask when scope is materially ambiguous or an action needs user authorization.
-5. Establish the expected result and relevant checks before implementation. Implement through one active writer, then use evidence-verification. On a relevant failure, use bounded-repair: capture evidence, state an attempt budget, repair one cause, and recheck. Stop at the budget and report unresolved failures.
-6. Report the changes, evidence, and unresolved limitations in plain language.
+5. Establish acceptance checks before implementation. Use evidence-verification
+   and bounded-repair as relevant. Default to two corrective attempts per stable
+   failure ID and five total per run. Reserve each attempt in the ledger before
+   changing artifacts; interrupted or unverified attempts count. Diagnosis and
+   unchanged-code rechecks do not. Multi-failure repairs count against every
+   affected failure and once against the run. Respect explicit user overrides,
+   never silently reset/increase budgets, and stop at either limit. If prior
+   counters cannot be recovered, stop repairs and report that blocker.
+6. Report exactly one scoped outcome using the ledger definitions: Failed,
+   Blocked, Inconclusive, or Verified. Include scope/revision, changes/findings,
+   actual evidence, repair counts/limits, limitations, and next action. A static
+   review does not imply verified runtime behavior.
 
 For unfamiliar or substantial work, select repository-reconnaissance,
 requirements-discovery, architecture-design, or task-planning only as the task

@@ -11,3 +11,5 @@ license: MIT
 **Boundary:** Read-only. Do not modify files, run destructive commands, or invent missing system details.
 
 **Return:** Concise findings with file or artifact evidence, likely risks, assumptions, and questions that affect implementation. Separate observed facts from recommendations.
+
+**Outcome and handoff:** Report exactly one scoped outcome: Failed only when a required check confirms a defect; Blocked when an external prerequisite prevents completion and no confirmed failure takes precedence; Inconclusive when evidence is insufficient, stale, flaky, or conflicting; Verified only when every required check in this review's scope passes at final state. Include scope/revision, findings, actual evidence, repair counts/limits if applicable, limitations, and next action. Static review does not verify runtime behavior. Preserve supplied run-ledger failure IDs and counters; read-only analysis consumes no repair attempts.

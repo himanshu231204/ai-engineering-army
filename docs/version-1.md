@@ -13,7 +13,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 | Skill library | Ten core workflows and seven concise read-only specialist contracts in `.agents/skills/`. |
 | Activation | Hybrid: native discovery when supported, bootstrap skill for manual discovery. |
 | Delegation | Bounded, independent read-only analysis may run in parallel; one active writer integrates changes. |
-| Completion | Evidence-based checks and a bounded repair loop with honest reporting. |
+| Completion | Session-first run ledger, evidence-based checks, bounded repair accounting, and honest scoped reporting. |
 | CLI | Dependency-free commands to validate, list, and package the canonical skills. |
 | Plugin distribution (1.1) | Claude Code plugin, self-hosted marketplace catalog, and standalone ZIP using the same canonical skills. |
 | Plugin adapters (1.2) | Codex compatibility manifest and local-marketplace ZIP; optional OpenCode 2 skill-registration module. The portable skills remain independent. |
@@ -41,6 +41,10 @@ It does not include an orchestration engine, standalone agent, application, onli
 15. The Codex plugin ZIP is a self-contained local marketplace. The OpenCode plugin registers only bundled skills, refuses name/ID conflicts, and fails explicitly on unsupported host APIs or missing files. Offline adapter tests are distinguished from native host evidence.
 16. Pushing a version tag publishes a GitHub release with every package asset, release notes, and checksums. The release workflow refuses to publish when `VERSION` and the tag disagree, when validation fails, or when the regression suite fails.
 17. Every version-bearing file is declared in `.version-bump.json`. One registry drives validation, drift detection, and bumps, and the audit finds version references the registry does not manage.
+18. Bootstrap includes a session-first ledger for run/revision identity, working-tree state, host/version, actual skill loads, acceptance checks, assignments, evidence, repair history, blockers, outcome, and next action. File persistence requires authorized scope; secrets and personal data are excluded.
+19. Repair defaults are two attempts per stable failure ID and five per run. Explicit user overrides govern. Reserve before corrective changes; interrupted and unverified attempts count, diagnosis and unchanged-code rechecks do not, and multi-failure repairs count for every affected failure and once for the run. Preserve IDs/counters across delegation, reload, handoff, and resume. Unknown prior counts stop repairs; either limit stops further repairs while independent requirements and test expectations remain intact.
+20. Every scoped handoff uses exactly one outcome: Failed for a required check confirming a remaining defect; Blocked for an external prerequisite when no confirmed failure takes precedence; Inconclusive for insufficient, stale, flaky, or conflicting evidence; Verified only when all scoped required checks pass at final state. Reports include scope/revision, changes/findings, actual evidence, repair counts/limits, limitations, and next action. Static review is not runtime verification.
+21. A repeatable host procedure distinguishes native package loading, explicit activation, fresh-session automatic activation, read-only delegation, successful repair, per-failure and run-wide exhaustion, resumed accounting, missing-skill fallback, and outcome integrity. Evaluate Claude Code, Codex, and OpenCode independently; unavailable checks are blocked or unrun, never inferred as passes. Historical runs and offline adapter tests are not proof for a new candidate.
 
 ## Version history
 
@@ -49,8 +53,9 @@ The early v0.1 discussion described the design milestone. The repository adopted
 existing labels are preserved. 1.1.1 records discovery and layout fixes and was
 never published separately. The public release 1.2.0, tagged `v1.2.0`, adds
 Codex/OpenCode plugin adapters; 1.2.1 adds the tag-triggered release workflow;
-1.2.2 adds the declarative version registry; 1.3.0 is the current candidate
-expanding workflow stages and specialist contracts to 17 skills.
+1.2.2 adds the declarative version registry; 1.3.0 expanded workflow stages and
+specialist contracts to 17 skills. Later unreleased source changes are tracked
+in the changelog and do not constitute a published release.
 A version bump records a source/API change, not completion of
 behavioral evaluation. Changelog dates record source history; hosted release/tag
 status is checked separately using the release procedure.

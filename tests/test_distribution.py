@@ -203,6 +203,23 @@ class DistributionTests(unittest.TestCase):
                 self.assertEqual(json.loads(archive.read("aiea-manifest.json"))["skills"],
                                  ["aiea-bootstrap"])
 
+    def test_run_ledger_resource_and_manifest_hash_ship_in_all_package_modes(self):
+        relative = "aiea-bootstrap/references/run-ledger.md"
+        expected = (aiea.SKILLS_ROOT / relative).read_bytes()
+        expected_hash = hashlib.sha256(expected).hexdigest()
+        for host, prefix in aiea.HOST_PATHS.items():
+            for mode, selection in (("full", ()), ("bootstrap-only", ("--skill", "aiea-bootstrap"))):
+                with self.subTest(host=host, mode=mode), zipfile.ZipFile(
+                        self.package(host, *selection, output=self.output / host / mode)) as archive:
+                    archive_name = f"{prefix}/{relative}"
+                    self.assertEqual(archive.read(archive_name), expected)
+                    manifest = json.loads(archive.read("aiea-manifest.json"))
+                    item, = [entry for entry in manifest["files"] if entry["path"] == archive_name]
+                    self.assertEqual(item["size"], len(expected))
+                    self.assertEqual(item["sha256"], expected_hash)
+                    if mode == "bootstrap-only":
+                        self.assertEqual(manifest["skills"], ["aiea-bootstrap"])
+
     def test_refuses_overwrite_and_unknown_skill(self):
         archive = self.package("claude-code-plugin")
         before = archive.read_bytes()

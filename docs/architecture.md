@@ -94,8 +94,25 @@ The lead chooses checks appropriate to the behavior changed, inspects their resu
 
 The intended sequence is scope and inspect, select/load skills, optionally review,
 integrate through one writer, run checks, diagnose/repair within a stated budget,
-then report evidence. [Manual validation](workflow-validation.md) checks this
-sequence; [verification status](verification-status.md) records what was observed.
+then report evidence. Bootstrap's `references/run-ledger.md` provides a reusable,
+session-first record for revisions, working-tree state, actual skill loads,
+acceptance checks, assignments, evidence, blockers, outcomes, and repair
+accounting. File persistence requires user-authorized scope; secrets and personal
+data are excluded. Stable failure IDs and counters survive delegation, reloads,
+handoffs, and resumes. Defaults are two corrective attempts per failure and five
+per run; explicit user overrides govern. Reserve each attempt before a correction;
+interrupted/unverified attempts count, diagnosis and unchanged-code rechecks do
+not, and a multi-failure repair counts against each affected failure and once for
+the run. Unknown prior counts stop repairs.
+
+Every handoff uses exactly one scoped outcome: Failed (a required check confirms
+a remaining defect), Blocked (an external prerequisite prevents completion and
+no confirmed failure takes precedence), Inconclusive (evidence is insufficient,
+stale, flaky, or conflicting), or Verified (all required scoped checks pass at
+final state). Include scope/revision, changes/findings, actual evidence, repair
+counts/limits, limitations, and next action. Static review cannot establish
+runtime behavior. [Manual validation](workflow-validation.md) checks this
+sequence; [verification status](verification-status.md) records observations.
 
 ### 6. Evaluation boundary
 

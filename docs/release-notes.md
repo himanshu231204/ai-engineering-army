@@ -1,4 +1,4 @@
-# AIEA 1.4.3 public release
+# AIEA 1.5.0 public release
 
 AIEA is an MIT-licensed portable engineering skill library for Claude Code, Codex,
 and OpenCode. This preview contains 17 skills, plugin adapters for all three
@@ -27,6 +27,9 @@ automatic installer, hooks, telemetry, or benchmark runner.
 - Every tagged version is published as a full public release, and a tag push now publishes one directly.
 - The plugin manifest now carries a listing icon, a display name, and documentation and support links for the official directory.
 - The plugin is now published as `ai-engineering-army`. The marketplace maps the previous `aiea` name to the new one, so existing installs migrate rather than fail.
+- A reusable run ledger records revisions, actual skill loads, acceptance evidence, repair history, blockers, and scoped handoffs. It stays in the session unless you authorize writing it to a file.
+- Repairs default to two attempts per stable failure and five per run. Each attempt is reserved before a change, and counters survive delegation, reloads, handoffs, and resumed sessions.
+- Every report ends in exactly one scoped outcome: Failed, Blocked, Inconclusive, or Verified, with the evidence and limits behind it.
 
 ## Choose an asset
 
@@ -77,5 +80,5 @@ are instructions, not installed agent processes, and read-only boundaries and
 repair budgets depend on host/model compliance. See the
 [verification record](https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/verification-status.md).
 
-This file describes the `v1.4.3` public release. Building the bundle locally does
+This file describes the `v1.5.0` public release. Building the bundle locally does
 not publish a GitHub release or certify additional behavioral checks.

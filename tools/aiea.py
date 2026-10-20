@@ -738,7 +738,9 @@ def command_package(args: argparse.Namespace) -> int:
         "Review skill contents and adapter code before enabling them in an agent host. "
         "The package does not install an agent, grant tools, or configure permissions.\n\n"
         "Start a new host session, ask it to load `aiea-bootstrap`, and give it your task, "
-        "acceptance checks, and a repair-attempt budget. Automatic activation is not guaranteed. "
+        "acceptance checks, and the default repair limits of two attempts per failure and five per run. "
+        "Reserve attempts before changes and preserve counters across resumes. Use exactly one scoped outcome: "
+        "Failed, Blocked, Inconclusive, or Verified, with evidence and limitations. Automatic activation is not guaranteed. "
         "If a skill is missing, report it rather than claiming it loaded.\n\n"
         "Developer guide: https://github.com/himanshu231204/ai-engineering-army/blob/main/docs/getting-started.md\n"
     ).encode("utf-8")

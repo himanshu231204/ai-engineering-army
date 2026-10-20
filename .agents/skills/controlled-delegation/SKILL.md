@@ -13,6 +13,12 @@ The lead agent owns the task outcome and shared-tree integration.
 - Delegate only questions with clear boundaries and useful independent answers.
 - Parallelize specialists only when their work is read-only and does not depend on another specialist's result.
 - Give each specialist the goal, relevant files or evidence, explicit exclusions, and a requested output format.
+- Include stable failure IDs and current per-failure/run repair counts and
+  limits when relevant. Delegation does not reset, transfer, or enlarge the
+  budget. Specialists report attempted changes (if any were authorized) against
+  the shared ledger; read-only analysis consumes no repair attempts. If the
+  ledger resource is absent, keep these fields in session rather than requiring
+  bootstrap to be installed.
 - Ask for findings, evidence, risks, and open questions. Do not ask for broad implementation proposals without a concrete decision to inform.
 - State required capabilities and allowed checks. Decline or report missing tools,
   credentials, or safe test environments rather than pretending a specialist ran.
@@ -30,6 +36,12 @@ The lead agent owns the task outcome and shared-tree integration.
   decisions to the lead. If a specialist fails or reaches its budget, retain its
   partial findings and mark that review incomplete; do not silently substitute
   fictional results or give another agent concurrent write access.
+- Use the shared scoped terminal outcome definitions: Failed for a confirmed
+  required defect, Blocked for an external prerequisite without a confirmed
+  failure taking precedence, Inconclusive for insufficient/stale/flaky/conflicting
+  evidence, and Verified only for all required checks in the stated scope passing
+  at final state. Report scope/revision, findings, actual evidence, repair
+  counts/limits, limitations, and next action; static review is not runtime proof.
 
 ## Specialist contract
 
