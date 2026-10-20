@@ -16,6 +16,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 | Completion | Evidence-based checks and a bounded repair loop with honest reporting. |
 | CLI | Dependency-free commands to validate, list, and package the canonical skills. |
 | Plugin distribution (1.1) | Claude Code plugin, self-hosted marketplace catalog, and standalone ZIP using the same canonical skills. |
+| Plugin adapters (1.2) | Codex compatibility manifest and local-marketplace ZIP; optional OpenCode 2 skill-registration module. The portable skills remain independent. |
 | Host support | Claude Code, Codex, and OpenCode project layouts described with official documentation references. |
 | Evaluation | Sanitized, illustrative fixture data for later use by separate ArmyBench. |
 | Governance | Agent instructions, security guidance, contribution rules, changelog, version, and release procedure. |
@@ -28,22 +29,24 @@ It does not include an orchestration engine, standalone agent, application, onli
 4. `python tools/aiea.py package --host <host>` creates a ZIP with the correct project path for that host, an install note, and a manifest with SHA-256 file hashes.
 5. Packaging refuses to overwrite an existing archive and rejects unknown skill names.
 6. Packages contain no symlinks and do not include unrelated repository files.
-7. CI runs validation and regression checks on Windows/Linux and Python 3.10/3.12, builds all four package targets, and retains downloadable artifacts.
+7. CI runs validation and regression checks on Windows/Linux and Python 3.10/3.12 with Node 22 adapter checks, builds all six package targets, and retains downloadable artifacts.
 8. The root README and agent instructions state the framework-only boundary and provide copy-pasteable commands.
 9. Architecture, host compatibility, CLI, security, contribution, evaluation, and release documentation agree with the implementation.
 10. Local validation and packaging require no secrets, network access, or managed runtime. Installing from GitHub requires network access through the host.
 11. Plugin metadata matches `VERSION`, explicitly covers every canonical skill once, and resolves within the plugin root.
-12. Regression checks cover all four package targets, hashes, selected skills, reproducibility, overwrite protection, and invalid plugin metadata.
+12. Regression checks cover all six package targets, hashes, selected skills, reproducibility, overwrite protection, and invalid plugin metadata.
 
 13. Bootstrap packages contain a host-neutral discovery reference and explain honest fallback when a selected-skill package omits a needed skill.
-14. Every package includes the MIT license without replacing the consumer project's license. The local `release` command prepares all four ZIPs, release notes, and checksums without publishing or overwriting prior output.
+14. Every package includes the MIT license without replacing the consumer project's license. The local `release` command prepares all six ZIPs, release notes, and checksums without publishing or overwriting prior output.
+15. The Codex plugin ZIP is a self-contained local marketplace. The OpenCode plugin registers only bundled skills, refuses name/ID conflicts, and fails explicitly on unsupported host APIs or missing files. Offline adapter tests are distinguished from native host evidence.
 
 ## Version history
 
 The early v0.1 discussion described the design milestone. The repository adopted
 1.0.0 for its initial framework source and 1.1.0 for plugin distribution; those
-existing labels are preserved. 1.1.1 is the unreleased patch candidate for discovery
-and layout fixes. A version bump records a source/API change, not completion of
+existing labels are preserved. 1.1.1 records discovery and layout fixes; 1.2.0 is
+the current public preview candidate adding Codex/OpenCode plugin adapters.
+A version bump records a source/API change, not completion of
 behavioral evaluation. Changelog dates record source history; hosted release/tag
 status is checked separately using the release procedure.
 

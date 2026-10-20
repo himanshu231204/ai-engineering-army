@@ -16,6 +16,21 @@ explicitly registers each canonical skill, including all five specialists. In 1.
 `skills/<name>/SKILL.md`. This differs from the project-skill ZIP in the table.
 See [installation and verification](claude-code-plugin.md).
 
+## Codex and OpenCode plugin distribution (1.2)
+
+| Target | Plugin layout | Activation |
+|---|---|---|
+| `codex-plugin` | `.codex-plugin/plugin.json`, `skills/`, local `.agents/plugins/marketplace.json` | Add the extracted local marketplace, install `aiea@aiea-marketplace`, and request bootstrap in a new session. |
+| `opencode-plugin` | `package.json`, `index.js`, `skills-index.json`, `skills/` | Add the extracted directory to OpenCode 2's `plugins` configuration; the adapter contributes skill definitions. |
+
+These ZIPs are extracted into separate directories, not into a target project.
+Use either the plugin or project skills to avoid duplicate names. The OpenCode
+adapter is optional local registration code; canonical instructions still work
+without it. It has no event hooks, tools, network calls, or permissions of its
+own. Its contract tests do not certify native host loading or model invocation.
+See the [Codex](../adapters/codex/README.md) and
+[OpenCode](../adapters/opencode/README.md) guides for installation and limits.
+
 ## Use the canonical tree
 
 If the target is this repository, Codex and OpenCode can discover `.agents/skills/` natively. Claude Code uses the generated Claude package path.
@@ -28,7 +43,7 @@ python tools/aiea.py package --host codex
 python tools/aiea.py package --host opencode
 ```
 
-Packages are project-local. The ZIP commands do not manage global paths, host settings, or permissions. The optional Claude Code plugin is installed and scoped by Claude Code itself. AIEA does not modify those locations.
+Project-skill packages are project-local. The ZIP commands do not manage global paths, host settings, or permissions. Plugin installation is explicitly performed through the chosen host, using the adapter instructions. AIEA's packaging CLI does not modify those locations.
 
 ## Verification limits
 
@@ -45,3 +60,5 @@ Host discovery behavior changes over time. These references were checked for v1 
 - [Claude Code skills](https://code.claude.com/docs/en/skills)
 - [Codex skills](https://developers.openai.com/codex/skills)
 - [OpenCode skills](https://opencode.ai/docs/skills)
+- [Codex plugins and marketplace schema](https://developers.openai.com/plugins/build/plugins)
+- [OpenCode 2 plugin API](https://opencode.ai/v2/docs/build/plugins)

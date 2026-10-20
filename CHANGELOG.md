@@ -2,6 +2,14 @@
 
 All notable AIEA changes are recorded here.
 
+## 1.2.0 - Unreleased
+
+- Added a Codex source manifest and self-contained plugin ZIP with a local marketplace.
+- Added an optional OpenCode 2 adapter that registers bundled skills without hooks, tools, network access, or orchestration.
+- Preserved canonical skill content, standalone project packages, and selected-skill packaging.
+- Added adapter metadata checks, offline OpenCode registration/conflict/missing-file tests, and six-target release bundles.
+- Documented explicit plugin installation and the distinction between offline adapter tests and native model behavior.
+
 ## 1.1.1 - Unreleased
 
 - Prepared a public preview with developer onboarding, explicit activation, and host troubleshooting.

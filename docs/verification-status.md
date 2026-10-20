@@ -10,7 +10,7 @@ skills. Source manifests passed validation with the contributor CLAUDE.md warnin
 the standalone ZIP passed native validation without warnings. Five distribution
 tests passed. Model-driven skill invocation was not verified in that check.
 
-## Current source
+## 1.1.1 source baseline
 
 1.1.1 source is on main at `a26e418`. Its changes flatten canonical skill folders,
 add a host-neutral registry and bootstrap discovery fallback, and make workflow
@@ -121,3 +121,22 @@ Every package now includes the MIT license. Project-skill ZIPs use
 first-task guidance, and host troubleshooting. The
 [release notes](release-notes.md) carry the remaining behavioral limitations.
 These distribution checks do not change the native-host results above.
+
+## Codex and OpenCode plugin candidate: 2026-10-20
+
+Version 1.2.0 adds plugin adapters against source baseline `78bd6c7` plus the
+working-tree changes. Canonical skill bodies are unchanged from 1.1.1.
+
+| Check | Observed result |
+|---|---|
+| Offline distribution suite | 15 Python tests passed locally on Windows, Python 3.11.9 and Node 24.14.1; includes all six package targets, subset references, metadata/version alignment, hashes, and release checksums |
+| OpenCode adapter contract | Four Node tests imported the actual packaged module and checked nine-skill registration, exact bodies/resource paths, conflicts, unsupported APIs, and missing files using a host API harness |
+| Codex installation commands | Syntax checked using local Codex 0.163.0 `plugin ... --help`; no installation into user config was performed |
+| Native Codex plugin loading | Unverified; a structurally correct ZIP/local marketplace is not a host-loading pass |
+| Native OpenCode 2 adapter loading/model behavior | Unverified; contract tests do not start OpenCode or a model |
+| CI matrix | Updated to install Node 22 and exercise all six targets; hosted runs for these changes have not occurred |
+
+The [Codex](../adapters/codex/README.md) and
+[OpenCode](../adapters/opencode/README.md) guides distinguish plugins from
+project-skill ZIPs. Prior native authentication, filesystem, and telemetry
+blockers remain as recorded above; no new automatic-triggering pass is claimed.

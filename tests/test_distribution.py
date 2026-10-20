@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -37,6 +38,41 @@ class DistributionTests(unittest.TestCase):
         self.run_cli("validate")
         for group, count in (("core", 4), ("specialists", 5)):
             self.assertTrue(self.run_cli("list", "--group", group).stdout.strip().endswith(f"{count} skills"))
+
+    def test_codex_plugin_package_is_a_self_contained_local_marketplace(self):
+        with zipfile.ZipFile(self.package("codex-plugin")) as archive:
+            plugin = json.loads(archive.read(".codex-plugin/plugin.json"))
+            self.assertEqual(plugin["name"], "aiea")
+            self.assertEqual(plugin["skills"], "./skills/")
+            market = json.loads(archive.read(".agents/plugins/marketplace.json"))
+            self.assertEqual(market["name"], "aiea-marketplace")
+            entry, = market["plugins"]
+            self.assertEqual(entry["source"], {"source": "local", "path": "./"})
+            self.assertEqual(entry["name"], plugin["name"])
+            self.assertNotIn("hooks", plugin)
+
+    def test_opencode_plugin_runs_offline_and_registers_packaged_skills(self):
+        if not shutil.which("node"):
+            self.skipTest("Node.js is required for the OpenCode adapter contract test")
+        directory = self.output / "opencode-plugin"
+        with zipfile.ZipFile(self.package("opencode-plugin")) as archive:
+            archive.extractall(directory)
+        result = subprocess.run(
+            ["node", "--test", str(aiea.ROOT / "tests/opencode-plugin.test.mjs")],
+            env=os.environ | {"AIEA_TEST_PLUGIN": str(directory)},
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_new_plugin_subsets_only_reference_included_skills(self):
+        for host in ("codex-plugin", "opencode-plugin"):
+            with self.subTest(host=host), zipfile.ZipFile(self.package(
+                    host, "--skill", "aiea-bootstrap")) as archive:
+                self.assertEqual([n for n in archive.namelist() if n.endswith('/SKILL.md')],
+                                 ["skills/aiea-bootstrap/SKILL.md"])
+                if host == "opencode-plugin":
+                    self.assertEqual([s["name"] for s in json.loads(archive.read("skills-index.json"))],
+                                     ["aiea-bootstrap"])
 
     def test_canonical_skills_match_direct_host_discovery(self):
         skills, errors = aiea.load_skills()
@@ -94,7 +130,7 @@ class DistributionTests(unittest.TestCase):
                 self.assertIsNone(archive.testzip())
                 self.assertTrue(all(info.create_system == 3 for info in archive.infolist()),
                                 "ZIP creator platform must be fixed for cross-platform reproducibility")
-                license_name = "LICENSE" if host == "claude-code-plugin" else "AIEA-LICENSE.txt"
+                license_name = "LICENSE" if host in aiea.PLUGIN_HOSTS else "AIEA-LICENSE.txt"
                 self.assertEqual(archive.read(license_name), (aiea.ROOT / "LICENSE").read_bytes())
                 manifest = json.loads(archive.read("aiea-manifest.json"))
                 self.assertEqual(set(manifest["skills"]), {skill.name for skill in skills})
@@ -114,7 +150,26 @@ class DistributionTests(unittest.TestCase):
                     self.assertNotIn(".claude-plugin/marketplace.json", archive.namelist())
                 else:
                     self.assertNotIn(".claude-plugin/plugin.json", archive.namelist())
-                    self.assertNotIn("LICENSE", archive.namelist())  # Preserve the target project's license.
+                    if host not in aiea.PLUGIN_HOSTS:
+                        self.assertNotIn("LICENSE", archive.namelist())  # Preserve the target project's license.
+
+    def test_adapter_metadata_rejects_version_and_layout_drift(self):
+        root = self.output / "adapter-fixture"
+        for relative in (".codex-plugin/plugin.json", "adapters/opencode/plugin/package.json",
+                         "adapters/opencode/plugin/index.js"):
+            destination = root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(aiea.ROOT / relative, destination)
+        version = aiea.VERSION_FILE.read_text().strip()
+        self.assertEqual(aiea.adapter_errors(root, version), [])
+        for relative in (".codex-plugin/plugin.json", "adapters/opencode/plugin/package.json"):
+            path = root / relative
+            original = path.read_bytes()
+            document = json.loads(original)
+            for broken in (document | {"version": "0.0.0"}, None, []):
+                path.write_text(json.dumps(broken))
+                self.assertTrue(aiea.adapter_errors(root, version))
+            path.write_bytes(original)
 
     def test_subset_and_reproducibility(self):
         args = ("--skill", "security-review", "--skill", "aiea-bootstrap", "--skill", "security-review")

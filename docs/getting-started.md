@@ -5,7 +5,7 @@ working, authenticated Claude Code, Codex, or OpenCode installation. Model acces
 usage charges, tools, and permissions come from that host. AIEA adds no service,
 telemetry, credentials, hooks, or background agent.
 
-Version 1.1.1 is prepared for a **public preview**. Packaging is tested; automatic
+Version 1.2.0 is prepared for a **public preview**. Packaging is tested; automatic
 activation and completed native Claude/OpenCode model workflows remain unverified.
 Use explicit activation for your first task and inspect the host's loading evidence.
 See [verification status](verification-status.md) for the precise evidence.
@@ -36,6 +36,17 @@ Then send the first-task prompt below. The plugin guide lists
 [all nine commands](claude-code-plugin.md#skill-inventory).
 
 ## Install in Codex or OpenCode
+
+For installable plugin adapters, use the
+[Codex plugin/local marketplace](../adapters/codex/README.md) or
+[OpenCode 2 plugin](../adapters/opencode/README.md). Their ZIP names end in
+`codex-plugin.zip` and `opencode-plugin.zip`. Both are extracted separately from
+your target project. Codex uses its plugin commands; OpenCode 2 uses a `plugins`
+configuration entry. Native loading and model-driven use of these new adapters
+remain unverified. The OpenCode adapter executes a small local skill-registration
+module; it adds no tools, event hooks, or permissions.
+
+The following project-skill installation remains available without a plugin:
 
 Download the matching `codex` or `opencode` ZIP from a published release. Before
 extracting, inspect the file list and check for existing skills with the same names.
@@ -87,7 +98,7 @@ does not enforce a sandbox, spawn processes, or guarantee model compliance.
 Compare your ZIP's SHA-256 to its entry in `SHA256SUMS` from the same release:
 
 ```powershell
-Get-FileHash .\aiea-1.1.1-codex.zip -Algorithm SHA256
+Get-FileHash .\aiea-1.2.0-codex.zip -Algorithm SHA256
 ```
 
 On Linux use `sha256sum -c SHA256SUMS` with all listed assets present; on macOS

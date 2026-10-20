@@ -22,8 +22,11 @@ HOST_PATHS = {
     "claude-code": ".claude/skills",
     "claude-code-plugin": "skills",
     "codex": ".agents/skills",
+    "codex-plugin": "skills",
     "opencode": ".agents/skills",
+    "opencode-plugin": "skills",
 }
+PLUGIN_HOSTS = {"claude-code-plugin", "codex-plugin", "opencode-plugin"}
 REQUIRED_DOCS = (
     "README.md",
     "AGENTS.md",
@@ -273,6 +276,7 @@ def repository_errors(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
             errors.append("VERSION must contain a semantic version such as 1.0.0")
 
     errors.extend(plugin_errors(root, skills, version))
+    errors.extend(adapter_errors(root, version))
 
     for required in REQUIRED_DOCS:
         if not (root / required).is_file():
@@ -286,6 +290,24 @@ def repository_errors(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
             except (OSError, json.JSONDecodeError) as error:
                 errors.append(f"{fixture.relative_to(root).as_posix()}: invalid JSON ({error})")
     return skills, errors
+
+
+def adapter_errors(root: Path, version: str) -> list[str]:
+    errors: list[str] = []
+    for relative, expected in (
+        (".codex-plugin/plugin.json", {"name": "aiea", "version": version, "skills": "./.agents/skills/"}),
+        ("adapters/opencode/plugin/package.json", {"name": "aiea-opencode-plugin", "version": version,
+                                                 "type": "module", "exports": "./index.js"}),
+    ):
+        try:
+            document = json.loads((root / relative).read_text(encoding="utf-8"))
+            if not isinstance(document, dict) or any(document.get(key) != value for key, value in expected.items()):
+                errors.append(f"{relative}: adapter metadata must match AIEA name, version, and layout")
+        except (OSError, ValueError) as error:
+            errors.append(f"{relative}: {error}")
+    if not (root / "adapters/opencode/plugin/index.js").is_file():
+        errors.append("OpenCode plugin entrypoint is missing")
+    return errors
 
 
 def command_validate(_: argparse.Namespace) -> int:
@@ -368,25 +390,51 @@ def command_package(args: argparse.Namespace) -> int:
             data = file_path.read_bytes()
             add_payload(archive_name, data)
 
-    is_plugin = args.host == "claude-code-plugin"
-    if is_plugin:
+    is_plugin = args.host in PLUGIN_HOSTS
+    if args.host == "claude-code-plugin":
         plugin = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
         # The standalone bundle uses Claude Code's standard skills/ layout.
         plugin.pop("skills", None)
         add_payload(".claude-plugin/plugin.json", (json.dumps(plugin, indent=2) + "\n").encode("utf-8"))
+    elif args.host == "codex-plugin":
+        plugin = json.loads((ROOT / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
+        plugin["skills"] = "./skills/"
+        add_payload(".codex-plugin/plugin.json", (json.dumps(plugin, indent=2) + "\n").encode("utf-8"))
+        marketplace = {
+            "name": "aiea-marketplace", "interface": {"displayName": "AI Engineering Army"},
+            "plugins": [{"name": "aiea", "source": {"source": "local", "path": "./"},
+                         "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"},
+                         "category": "Productivity"}],
+        }
+        add_payload(".agents/plugins/marketplace.json", (json.dumps(marketplace, indent=2) + "\n").encode("utf-8"))
+    elif args.host == "opencode-plugin":
+        for name in ("package.json", "index.js"):
+            add_payload(name, (ROOT / "adapters/opencode/plugin" / name).read_bytes())
+        index = [{"name": skill.name, "description": skill.description} for skill in selected]
+        add_payload("skills-index.json", (json.dumps(index, indent=2) + "\n").encode("utf-8"))
 
     add_payload("LICENSE" if is_plugin else "AIEA-LICENSE.txt", (ROOT / "LICENSE").read_bytes())
 
-    installation = (
+    plugin_installation = {
+        "claude-code-plugin":
         "Extract into a separate plugin directory, then run `claude --plugin-dir ./aiea-plugin` "
-        "using the extracted directory's actual path. In Claude Code invoke `/aiea:aiea-bootstrap`.\n\n"
-        if is_plugin else
+        "using the extracted directory's actual path. In Claude Code invoke `/aiea:aiea-bootstrap`.\n\n",
+        "codex-plugin":
+        "Extract into a separate directory, keeping hidden folders. Run `codex plugin marketplace add /path/to/extracted-plugin` "
+        "then `codex plugin add aiea@aiea-marketplace`. Start a new session and request `aiea-bootstrap`. "
+        "These host commands update your plugin configuration.\n\n",
+        "opencode-plugin":
+        'Extract into a separate directory. In the target project, merge `"plugins": ["/absolute/path/to/extracted-plugin"]` '
+        'into `opencode.json(c)`, preserving existing entries. Requires OpenCode 2; restart the host and request `aiea-bootstrap`. '
+        'The adapter reads bundled skills and registers them; it adds no hooks, tools, or network calls.\n\n',
+    }
+    installation = plugin_installation.get(args.host,
         f"Extract this archive at the root of the target project. The skills will be placed under `{install_path}/`.\n\n"
     )
     install_readme = (
         f"# AIEA {version} package for {args.host}\n\n" + installation +
-        "Review skill contents before enabling them in an agent host. This package contains instructions and resources; "
-        "it does not install an agent, grant tools, or configure permissions.\n\n"
+        "Review skill contents and adapter code before enabling them in an agent host. "
+        "The package does not install an agent, grant tools, or configure permissions.\n\n"
         "Start a new host session, ask it to load `aiea-bootstrap`, and give it your task, "
         "acceptance checks, and a repair-attempt budget. Automatic activation is not guaranteed. "
         "If a skill is missing, report it rather than claiming it loaded.\n\n"
@@ -398,7 +446,8 @@ def command_package(args: argparse.Namespace) -> int:
         "name": "ai-engineering-army",
         "version": version,
         "host": args.host,
-        "format": "Claude Code plugin" if is_plugin else "Agent Skills",
+        "format": {"claude-code-plugin": "Claude Code plugin", "codex-plugin": "Codex plugin",
+                   "opencode-plugin": "OpenCode 2 plugin"}.get(args.host, "Agent Skills"),
         "install_path": install_path,
         "skills": [skill.name for skill in selected],
         "files": manifest_files,
@@ -428,7 +477,7 @@ def command_package(args: argparse.Namespace) -> int:
 
 
 def command_release(args: argparse.Namespace) -> int:
-    """Stage the four distributions and checksums locally; never publish."""
+    """Stage all distributions and checksums locally; never publish."""
     if command_validate(args):
         return 1
     version = VERSION_FILE.read_text(encoding="utf-8-sig").strip()
@@ -487,7 +536,7 @@ def build_parser() -> argparse.ArgumentParser:
     package.add_argument("--skill", action="append", help="include one skill by exact name; repeat to select several")
     package.set_defaults(handler=command_package)
 
-    release = commands.add_parser("release", help="prepare all four ZIPs, release notes, and SHA256SUMS locally")
+    release = commands.add_parser("release", help="prepare all host ZIPs, release notes, and SHA256SUMS locally")
     release.add_argument("--output", help="new output directory (default: dist/release-<version>)")
     release.set_defaults(handler=command_release)
     return parser

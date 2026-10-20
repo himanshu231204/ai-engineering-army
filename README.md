@@ -2,7 +2,7 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.1.1` (public preview candidate; not yet a tagged release) · **License:** MIT
+**Source version:** `1.2.0` (public preview candidate; not yet a tagged release) · **License:** MIT
 
 Start with the [developer guide](docs/getting-started.md) for installation,
 your first task, and troubleshooting. Use explicit bootstrap activation for the
@@ -13,6 +13,7 @@ See [the evidence and limits](docs/verification-status.md).
 ## What v1 includes
 
 - A Claude Code marketplace/plugin adapter and standalone plugin ZIP.
+- A Codex plugin/local-marketplace ZIP and an optional OpenCode 2 skill-registration plugin.
 - Nine portable skills: four core workflow skills and five read-only specialist contracts.
 - A dependency-free Python CLI to validate and list skills and build ZIP packages for supported hosts.
 - Host compatibility guidance for native discovery and packaged skill locations.
@@ -33,6 +34,23 @@ Start with `/aiea:aiea-bootstrap`. To try a local checkout, use
 `claude --plugin-dir /path/to/ai-engineering-army` from a separate target project.
 See [plugin installation, all nine commands, and smoke checks](docs/claude-code-plugin.md).
 No Python is needed to use the installed plugin; Python is for maintainer tooling.
+
+## Codex and OpenCode plugins
+
+Build the matching adapter from this checkout:
+
+```sh
+python tools/aiea.py package --host codex-plugin
+python tools/aiea.py package --host opencode-plugin
+```
+
+Extract each ZIP into its own directory. For Codex, add the extracted local
+marketplace and install `aiea@aiea-marketplace`. For OpenCode 2, add the extracted
+directory to your project's `plugins` configuration. Follow the exact commands
+in the [Codex adapter](adapters/codex/README.md) or
+[OpenCode adapter](adapters/opencode/README.md). Keep either plugin or project
+skills enabled per host/project to avoid duplicates. Native installation and
+model-driven use of these new adapters remain unverified.
 
 ## Quick start
 
@@ -63,13 +81,13 @@ Codex and OpenCode can also discover the canonical `.agents/skills/` directory d
 
 See [CLI usage](docs/cli.md), [host compatibility](docs/host-compatibility.md), and the [v1 definition of done](docs/version-1.md).
 
-Maintainers can prepare all four packages, release notes, and checksums locally:
+Maintainers can prepare all six packages, release notes, and checksums locally:
 
 ```sh
 python tools/aiea.py release
 ```
 
-The bundle is written to `dist/release-1.1.1/`. This command does not publish.
+The bundle is written to `dist/release-1.2.0/`. This command does not publish.
 See [the release procedure](docs/release.md).
 
 See [verification status](docs/verification-status.md) for observed host checks and
@@ -89,6 +107,7 @@ See [verification status](docs/verification-status.md) for observed host checks 
 - `.agents/skills/` — canonical core skills and specialist contracts.
 - `skill-registry.json` - portable skill names and core/specialist groups.
 - `.claude-plugin/` — Claude Code plugin manifest and marketplace catalog.
+- `.codex-plugin/` - Codex plugin source manifest.
 - `tools/aiea.py` — validation, listing, and host package CLI.
 - `adapters/` — host discovery and packaging guidance; see verification status for observed checks.
 - `evaluations/fixtures/` — small, host-neutral examples.
@@ -106,6 +125,8 @@ python tools/aiea.py package --host claude-code-plugin --output .tmp/packages
 python tools/aiea.py package --host claude-code --output .tmp/packages
 python tools/aiea.py package --host codex --output .tmp/packages
 python tools/aiea.py package --host opencode --output .tmp/packages
+python tools/aiea.py package --host codex-plugin --output .tmp/packages
+python tools/aiea.py package --host opencode-plugin --output .tmp/packages
 ```
 
 The package command refuses to overwrite an existing archive. Remove or choose a different output directory before rebuilding the same host package. See [contribution rules](CONTRIBUTING.md).

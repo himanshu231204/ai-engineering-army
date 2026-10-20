@@ -60,6 +60,19 @@ as `aiea@aiea-marketplace`. A standalone plugin ZIP is generated with the standa
 `skills/` layout. Both forms remain instruction-only host adapters; neither adds
 an orchestration engine. See [the plugin guide](claude-code-plugin.md).
 
+Version 1.2 adds a Codex compatibility manifest at `.codex-plugin/plugin.json`
+pointing to the canonical skills. The standalone `codex-plugin` ZIP rewrites that
+path to `skills/` and supplies a local marketplace catalog within the archive.
+No repository-root Codex marketplace is required to use that extracted bundle.
+
+The optional `opencode-plugin` ZIP includes a small dependency-free JavaScript
+module. OpenCode 2 calls its `setup`, which reads only bundled skill files and a
+generated index, then registers skill definitions through `ctx.skill.transform`.
+The adapter refuses existing skill names/IDs. It does not intercept sessions,
+run tools, call a network, alter permissions, or enforce the workflow. Project
+skill packages remain usable without this adapter. Source code lives under
+`adapters/opencode/plugin/`; installed skill copies and the index are generated.
+
 Bootstrap first uses the host inventory. If it is incomplete, the bundled
 `references/discovery.md` maps tasks to skill names and resolves them as siblings
 of the loaded bootstrap. Selected-skill packages may omit siblings; absence is

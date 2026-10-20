@@ -14,6 +14,9 @@ AIEA skills guide agents that may have access to files, commands, credentials, a
 
 ## Package handling
 
+- The optional OpenCode 2 plugin executes a local JavaScript registration module at host startup. Review it before enabling it. It reads bundled skills and contributes definitions; no tools, network requests, event hooks, or permission changes are implemented.
+- Install either a plugin adapter or project skills for the same host/project. The OpenCode adapter refuses skill-name conflicts; do not work around that by silently replacing another skill.
+
 - The AIEA CLI validates structure and writes selected skill files into a ZIP. It does not run skill scripts, install the archive, or grant host permissions.
 - Review the source and generated archive before installing it into another project. Check the manifest's file list and hashes against the intended release.
 - The manifest is not signed and does not establish publisher identity. Obtain packages from a trusted release source and compare checksums through a trusted channel when available.

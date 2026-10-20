@@ -1,0 +1,10 @@
+{
+  "name": "aiea-opencode-plugin",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "exports": "./index.js",
+  "main": "./index.js",
+  "description": "Local OpenCode 2 adapter for AIEA's portable engineering skills.",
+  "license": "MIT"
+}
