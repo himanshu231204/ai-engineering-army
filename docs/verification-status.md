@@ -179,7 +179,10 @@ hold. The repository changes below address what the portal can check.
 | Registry and packaging | The validator now rejects a missing, non-square, oversized, or wrong-format icon and a missing `displayName`; two regression tests cover both the manifest and the packaged archive |
 | Source-download instructions | `docs/getting-started.md` separates fetching the source from running it, states that the fetch runs nothing, and tells the reader to review the files first |
 | Contributor instructions | The root `CLAUDE.md` was removed and its guidance merged into `AGENTS.md`, which Claude Code reads natively; the README states that contributor files are not plugin context |
-| Policy hold: name similarity | Unresolved and left to the reviewer. The slug `aiea` is unique and unchanged. The directory already contains plugins named `Engineering` (Anthropic verified), `Data Engineering`, `Superpowers`, `Code Review`, and `PR Review Toolkit`, and a third-party plugin named `ai-engineering`. A hold is a reviewer decision, not a rejection. |
+| Policy hold: name similarity | Resolved. The plugin slug is now `ai-engineering-army`, and the portal reported `Name and publisher checks passed` with no findings. The marketplace maps the former `aiea` name to the new one so existing installs migrate. |
+| Policy hold: image reference | Resolved. The listing icon sits at the default location the directory reads, and no file in the plugin folder names its path, so no script or setting points at an image file. |
+| Warning: download-and-run pattern | Resolved. The developer guide no longer contains a shell block that fetches code and then executes it. |
+| Warning: unrecognized listing fields | Left as is. `documentationUrl` and `supportUrl` are read by the directory for the listing and ignored by Claude Code at load time; the portal reports no action needed. |
 
 Directory review decides what goes live. Native automatic activation of the
 skills remains unverified, as recorded above.

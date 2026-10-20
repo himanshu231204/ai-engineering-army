@@ -54,25 +54,24 @@ Both place skills at `.agents/skills/<name>/SKILL.md`. Extract at your target
 project's root, keeping the hidden `.agents` folder. Start a new host session there.
 No Python is needed to use these installed skills.
 
-If release assets have not been published, build from source with Python 3.10+.
+If release assets have not been published, build from a source checkout with
+Python 3.10 or later.
 
-**Step 1 — get the source.** This only downloads files; it does not run any of
-them. Read the files before you run anything from a checkout.
+**Step 1 — get the source.** Get the repository from
+[the project page](https://github.com/himanshu231204/ai-engineering-army); its
+Code button offers a ZIP download. Getting the files does not run any of them.
+Read them before you run anything from a checkout.
 
-```sh
-git clone https://github.com/himanshu231204/ai-engineering-army.git
-```
-
-**Step 2 — build the packages.** These commands read the files in the checkout
-you just reviewed, validate them, and write ZIP archives to `dist/`. They make
-no network requests and install nothing.
+**Step 2 — build the packages.** From that checkout, run:
 
 ```sh
-cd ai-engineering-army
 python tools/aiea.py validate
 python tools/aiea.py package --host codex
 python tools/aiea.py package --host opencode
 ```
+
+These commands read the files in the checkout, validate them, and write ZIP
+archives to `dist/`. They make no network requests and install nothing.
 
 Extract the desired archive from `dist/` into your target project. Do not copy
 AIEA's contributor `AGENTS.md` over your project's instructions.

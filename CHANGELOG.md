@@ -2,6 +2,10 @@
 
 All notable AIEA changes are recorded here.
 
+## 1.4.1 - Unreleased
+
+- Rewrote the source-build instructions in the developer guide so no shell block fetches and then executes code, and pointed at the project page for obtaining the source.
+
 ## 1.4.0 - Unreleased
 
 - Renamed the plugin from `aiea` to `ai-engineering-army` so the directory listing cannot be confused with existing short connector names. The marketplace maps the former name to the new one, so existing installs migrate instead of failing.
