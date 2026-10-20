@@ -77,5 +77,26 @@ through this Codex Work session's tools; automatic activation was not measured.
 | Automatic discovery and other hosts | Not established by this manually loaded Codex run |
 
 This closes the basic repair/delegation smoke check for the observed Codex run.
-Budget exhaustion, conflicting reports, independent-agent failures, missing-skill
-behavior, other hosts, and reference-application behavior remain unverified.
+The follow-up below exercises budget exhaustion. Conflicting reports,
+independent-agent failures, missing-skill behavior, and reference-application
+behavior remain unverified.
+
+## Triggering, exhaustion, and native-host follow-up: 2026-10-20
+
+The [follow-up record](validation/2026-10-20-triggering-exhaustion-and-hosts.md)
+identifies the tested prompts, constraints, commands, and host blockers against
+source commit `8d64706`.
+
+| Check | Observed result |
+|---|---|
+| Exhaustion stop | Worker made exactly two permitted one-behavior repairs, stopped with one failing test, and reported incomplete |
+| Independent verification | Lead recheck confirmed the residual failure and unchanged test/requirement hashes; no third fix occurred |
+| Claude 2.1.281 structure | Marketplace validation passed; plugin validation passed with the contributor CLAUDE.md warning, with nonessential traffic disabled |
+| Claude model run | Blocked by expired OAuth access token, HTTP 401 |
+| Native Codex 0.163.0 | Blocked by local access denial during in-process app-server initialization |
+| OpenCode 2.0.16 | Started in isolated writable data directories and began model/tool reads; automatic approval review stopped its attempted App Center telemetry connection before completion |
+| Automatic triggering | Unverified: no completed native model/tool trace selecting and loading AIEA skills was obtained |
+
+Budget-exhaustion behavior passed only for the explicitly constrained Codex Work
+exercise. Native triggering, completed Claude/OpenCode behavior, and broader
+reliability are not established by these results.
