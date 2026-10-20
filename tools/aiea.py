@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import hashlib
 import json
 import re
@@ -15,6 +16,7 @@ from pathlib import Path, PurePosixPath
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS_ROOT = ROOT / ".agents" / "skills"
 VERSION_FILE = ROOT / "VERSION"
+BUMP_CONFIG = ".version-bump.json"
 NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 FIELD_PATTERN = re.compile(r"^([a-z][a-z0-9_-]*):(?:[ \t]*(.*))?$")
 VERSION_PATTERN = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
@@ -35,6 +37,7 @@ REQUIRED_DOCS = (
     "CHANGELOG.md",
     "CONTRIBUTING.md",
     "SECURITY.md",
+    BUMP_CONFIG,
     ".github/workflows/validate.yml",
     "docs/vision.md",
     "docs/architecture.md",
@@ -277,6 +280,7 @@ def repository_errors(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
 
     errors.extend(plugin_errors(root, skills, version))
     errors.extend(adapter_errors(root, version))
+    errors.extend(version_errors(root))
 
     for required in REQUIRED_DOCS:
         if not (root / required).is_file():
@@ -319,6 +323,273 @@ def command_validate(_: argparse.Namespace) -> int:
         return 1
     version = VERSION_FILE.read_text(encoding="utf-8-sig").strip()
     print(f"AIEA {version}: validated {len(skills)} skills, plugin/marketplace metadata, required documents, and evaluation fixtures.")
+    return 0
+
+
+# --- version registry -------------------------------------------------------
+#
+# `.version-bump.json` declares every file that carries the repository version.
+# The same registry drives validation, drift detection, and version bumps, so a
+# new host adapter is registered once instead of in several code paths.
+
+@dataclass(frozen=True)
+class VersionEntry:
+    path: str
+    field: str
+
+
+def bump_registry(root: Path = ROOT) -> tuple[list[VersionEntry], list[str], list[str], list[str]]:
+    """Return the declared version entries, audit excludes, required mentions, and errors."""
+    config_path = root / BUMP_CONFIG
+    if not config_path.is_file():
+        return [], [], [], []
+    try:
+        document = json.loads(config_path.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError) as error:
+        return [], [], [], [f"{BUMP_CONFIG}: {error}"]
+    if not isinstance(document, dict):
+        return [], [], [], [f"{BUMP_CONFIG} must contain an object"]
+    errors: list[str] = []
+    entries: list[VersionEntry] = []
+    declared = document.get("files")
+    if not isinstance(declared, list) or not declared:
+        errors.append(f"{BUMP_CONFIG} must define a non-empty files array")
+        declared = []
+    for entry in declared:
+        if (not isinstance(entry, dict) or not isinstance(entry.get("path"), str)
+                or not isinstance(entry.get("field"), str) or not entry["path"]):
+            errors.append(f"{BUMP_CONFIG} entries need a path and a field")
+            continue
+        entries.append(VersionEntry(path=entry["path"], field=entry["field"]))
+    audit = document.get("audit")
+    excludes = audit.get("exclude") if isinstance(audit, dict) else []
+    if not isinstance(excludes, list) or not all(isinstance(item, str) for item in excludes):
+        errors.append(f"{BUMP_CONFIG} audit.exclude must be an array of strings")
+        excludes = []
+    mentions = document.get("must_mention") or []
+    if not isinstance(mentions, list) or not all(isinstance(item, str) for item in mentions):
+        errors.append(f"{BUMP_CONFIG} must_mention must be an array of strings")
+        mentions = []
+    return entries, excludes, mentions, errors
+
+
+def _read_declared_version(root: Path, entry: VersionEntry) -> str:
+    path = root / entry.path
+    if entry.field == "text":
+        return path.read_text(encoding="utf-8-sig").strip()
+    if path.suffix.lower() in (".yaml", ".yml"):
+        for line in path.read_text(encoding="utf-8-sig").splitlines():
+            match = FIELD_PATTERN.match(line)
+            if match and match.group(1) == entry.field:
+                return _yaml_scalar(match.group(2) or "")
+        raise KeyError(entry.field)
+    document = json.loads(path.read_text(encoding="utf-8-sig"))
+    value = document
+    for part in entry.field.split("."):
+        value = value[int(part)] if isinstance(value, list) and part.isdigit() else value[part]
+    if not isinstance(value, str):
+        raise TypeError(f"{entry.field} is not a string")
+    return value
+
+
+def _write_declared_version(root: Path, entry: VersionEntry, version: str) -> None:
+    path = root / entry.path
+    if entry.field == "text":
+        path.write_text(f"{version}\n", encoding="utf-8")
+        return
+    if path.suffix.lower() in (".yaml", ".yml"):
+        lines = path.read_text(encoding="utf-8-sig").splitlines()
+        for index, line in enumerate(lines):
+            match = FIELD_PATTERN.match(line)
+            if match and match.group(1) == entry.field:
+                lines[index] = f"{entry.field}: {version}"
+                path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+                return
+        raise KeyError(entry.field)
+    original = path.read_text(encoding="utf-8-sig")
+    document = json.loads(original)
+    parts = entry.field.split(".")
+    target = document
+    for part in parts[:-1]:
+        target = target[int(part)] if isinstance(target, list) and part.isdigit() else target[part]
+    last = parts[-1]
+    indexed = isinstance(target, list) and last.isdigit()
+    previous = target[int(last)] if indexed else target.get(last)
+    if not isinstance(previous, str):
+        raise TypeError(f"{entry.field} is not a string")
+    # Replace the value in place when it is unambiguous, so the rest of the
+    # manifest keeps its original formatting.
+    pattern = re.compile(r'("' + re.escape(last) + r'"\s*:\s*)"(' + re.escape(previous) + r')"')
+    if len(pattern.findall(original)) == 1:
+        path.write_text(pattern.sub(lambda match: match.group(1) + '"' + version + '"', original, count=1),
+                        encoding="utf-8")
+        return
+    if indexed:
+        target[int(last)] = version
+    else:
+        target[last] = version
+    trailing = "\n" if original.endswith("\n") else ""
+    path.write_text(json.dumps(document, indent=2) + trailing, encoding="utf-8")
+
+
+def declared_versions(root: Path = ROOT) -> tuple[list[tuple[VersionEntry, str]], list[str]]:
+    """Return every declared file's current version, plus any read errors."""
+    entries, _, _, errors = bump_registry(root)
+    rows: list[tuple[VersionEntry, str]] = []
+    for entry in entries:
+        try:
+            rows.append((entry, _read_declared_version(root, entry)))
+        except (OSError, KeyError, IndexError, TypeError, ValueError) as error:
+            errors.append(f"{entry.path} ({entry.field}): {error}")
+    return rows, errors
+
+
+def version_errors(root: Path = ROOT) -> list[str]:
+    """Report drift between the declared version files and stale required mentions."""
+    entries, _, mentions, errors = bump_registry(root)
+    if errors or not entries:
+        return errors
+    rows, read_errors = declared_versions(root)
+    if read_errors:
+        return read_errors
+    values = {value for _, value in rows}
+    if len(values) > 1:
+        detail = ", ".join(f"{entry.path}={value}" for entry, value in rows)
+        return [f"declared version files are not in sync: {detail}"]
+    current = rows[0][1]
+    for relative in mentions:
+        path = root / relative
+        if not path.is_file():
+            errors.append(f"{relative}: a file that must name the current version is missing")
+            continue
+        if current not in path.read_text(encoding="utf-8-sig"):
+            errors.append(f"{relative} does not mention the current version {current}")
+    return errors
+
+
+def _audit_excluded(relative: str, excludes: list[str]) -> bool:
+    parts = relative.split("/")
+    for pattern in excludes:
+        if fnmatch.fnmatch(relative, pattern):
+            return True
+        if any(fnmatch.fnmatch(part, pattern) for part in parts[:-1]):
+            return True
+    return False
+
+
+def audit_versions(root: Path = ROOT) -> list[str]:
+    """Find undeclared files that still contain the current version string."""
+    entries, excludes, _, errors = bump_registry(root)
+    if errors:
+        return errors
+    rows, read_errors = declared_versions(root)
+    if read_errors:
+        return read_errors
+    if not rows:
+        return []
+    values = [value for _, value in rows]
+    current = max(set(values), key=values.count)
+    declared = {entry.path for entry in entries}
+    pattern = re.compile(r"(?<![0-9.])" + re.escape(current) + r"(?![0-9])")
+    findings: list[str] = []
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or path.is_symlink():
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative in declared or _audit_excluded(relative, excludes):
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+        if pattern.search(text):
+            findings.append(relative)
+    return findings
+
+
+def command_version(args: argparse.Namespace) -> int:
+    return run_version(ROOT, new_version=args.new_version, audit=args.audit)
+
+
+def run_version(root: Path = ROOT, new_version: str | None = None, audit: bool = False) -> int:
+    rows, errors = declared_versions(root)
+    if errors:
+        print("Version registry failed:", file=sys.stderr)
+        for error in errors:
+            print(f"- {error}", file=sys.stderr)
+        return 1
+    if not rows:
+        print(f"No version files are declared in {BUMP_CONFIG}.", file=sys.stderr)
+        return 1
+    print("Declared versions:")
+    for entry, value in rows:
+        print(f"  {entry.path} ({entry.field})  {value}")
+    values = sorted({value for _, value in rows})
+    drift = len(values) > 1
+    print("")
+    if drift:
+        print("DRIFT DETECTED - declared versions are not in sync:", file=sys.stderr)
+        for value in values:
+            print(f"  {value}", file=sys.stderr)
+    else:
+        print(f"All declared files are in sync at {values[0]}")
+
+    if new_version:
+        return _bump_version(root, new_version)
+    if drift:
+        return 1
+    if audit:
+        findings = audit_versions(root)
+        print("")
+        if findings:
+            print(f"Undeclared files containing {values[0]}:", file=sys.stderr)
+            for finding in findings:
+                print(f"  {finding}", file=sys.stderr)
+            print("Declare them in "
+                  f"{BUMP_CONFIG} or exclude them from the audit.", file=sys.stderr)
+            return 1
+        print(f"No undeclared files contain the version string {values[0]}. All clear.")
+    return 0
+
+
+def _bump_version(root: Path, new_version: str) -> int:
+    if not VERSION_PATTERN.fullmatch(new_version):
+        print(f"error: '{new_version}' does not look like a version (expected X.Y.Z)", file=sys.stderr)
+        return 2
+    entries, _, _, errors = bump_registry(root)
+    if errors:
+        for error in errors:
+            print(f"- {error}", file=sys.stderr)
+        return 1
+    # Preflight every declared file before writing, so a failure leaves the
+    # repository untouched instead of half-bumped.
+    try:
+        for entry in entries:
+            _read_declared_version(root, entry)
+    except (OSError, KeyError, IndexError, TypeError, ValueError) as error:
+        print(f"error: cannot read a declared version file: {error}", file=sys.stderr)
+        return 1
+    print("")
+    print(f"Bumping all declared files to {new_version}:")
+    print("")
+    for entry in entries:
+        try:
+            previous = _read_declared_version(root, entry)
+            _write_declared_version(root, entry, new_version)
+        except (OSError, KeyError, IndexError, TypeError, ValueError) as error:
+            print(f"error: could not update {entry.path}: {error}", file=sys.stderr)
+            return 1
+        print(f"  {entry.path} ({entry.field})  {previous} -> {new_version}")
+    print("")
+    print("Done. Running audit to check for missed files.")
+    print("")
+    findings = audit_versions(root)
+    if findings:
+        print("Undeclared files still contain the version string:", file=sys.stderr)
+        for finding in findings:
+            print(f"  {finding}", file=sys.stderr)
+        return 1
+    print("No undeclared files contain the version string. All clear.")
     return 0
 
 
@@ -539,6 +810,15 @@ def build_parser() -> argparse.ArgumentParser:
     release = commands.add_parser("release", help="prepare all host ZIPs, release notes, and SHA256SUMS locally")
     release.add_argument("--output", help="new output directory (default: dist/release-<version>)")
     release.set_defaults(handler=command_release)
+
+    version = commands.add_parser(
+        "version",
+        help="check, audit, or bump the version declared across the repository",
+    )
+    version.add_argument("new_version", nargs="?", help="new semantic version to write to every declared file")
+    version.add_argument("--check", action="store_true", help="report declared versions and detect drift")
+    version.add_argument("--audit", action="store_true", help="also scan the repository for undeclared version references")
+    version.set_defaults(handler=command_version)
     return parser
 
 

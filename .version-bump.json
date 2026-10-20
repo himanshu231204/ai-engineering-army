@@ -1,0 +1,21 @@
+{
+  "files": [
+    { "path": "VERSION", "field": "text" },
+    { "path": ".claude-plugin/plugin.json", "field": "version" },
+    { "path": ".codex-plugin/plugin.json", "field": "version" },
+    { "path": "adapters/opencode/plugin/package.json", "field": "version" }
+  ],
+  "audit": {
+    "exclude": [
+      "*.md",
+      ".git",
+      "dist",
+      ".tmp",
+      "node_modules",
+      ".version-bump.json"
+    ]
+  },
+  "must_mention": [
+    "docs/release-notes.md"
+  ]
+}

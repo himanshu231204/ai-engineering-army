@@ -27,6 +27,8 @@ jobs:
           node-version: "22"
       - name: Validate skills, docs, and fixtures
         run: python tools/aiea.py validate
+      - name: Check the version registry for drift
+        run: python tools/aiea.py version --audit
       - name: Test distribution contracts
         run: python -m unittest discover -s tests -v
       - name: Prepare release assets

@@ -2,7 +2,7 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.2.1` (public preview in development; latest release [`v1.2.0`](https://github.com/himanshu231204/ai-engineering-army/releases/tag/v1.2.0)) · **License:** MIT
+**Current release:** [latest GitHub release](https://github.com/himanshu231204/ai-engineering-army/releases) · **License:** MIT
 
 Start with the [developer guide](docs/getting-started.md) for installation,
 your first task, and troubleshooting. Use explicit bootstrap activation for the
@@ -61,6 +61,7 @@ python tools/aiea.py --version
 python tools/aiea.py validate
 python tools/aiea.py list
 python tools/aiea.py list --group core
+python tools/aiea.py version --check
 ```
 
 Build a package for a target project:
@@ -81,8 +82,8 @@ Codex and OpenCode can also discover the canonical `.agents/skills/` directory d
 
 See [CLI usage](docs/cli.md), [host compatibility](docs/host-compatibility.md), and the [v1 definition of done](docs/version-1.md).
 
-Prebuilt archives for every host are attached to the
-[`v1.2.0` release](https://github.com/himanshu231204/ai-engineering-army/releases/tag/v1.2.0),
+Prebuilt archives for every host are attached to each
+[GitHub release](https://github.com/himanshu231204/ai-engineering-army/releases),
 along with `SHA256SUMS` for verification.
 
 Maintainers can prepare all six packages, release notes, and checksums locally:
@@ -91,7 +92,7 @@ Maintainers can prepare all six packages, release notes, and checksums locally:
 python tools/aiea.py release
 ```
 
-The bundle is written to `dist/release-1.2.1/`. This command does not publish.
+The bundle is written to `dist/release-<VERSION>/`. This command does not publish.
 See [the release procedure](docs/release.md).
 
 See [verification status](docs/verification-status.md) for observed host checks and
@@ -110,6 +111,7 @@ See [verification status](docs/verification-status.md) for observed host checks 
 
 - `.agents/skills/` — canonical core skills and specialist contracts.
 - `skill-registry.json` - portable skill names and core/specialist groups.
+- `.version-bump.json` - every file that carries the repository version.
 - `.claude-plugin/` — Claude Code plugin manifest and marketplace catalog.
 - `.codex-plugin/` - Codex plugin source manifest.
 - `tools/aiea.py` — validation, listing, and host package CLI.

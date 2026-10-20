@@ -8,7 +8,7 @@ A dated source entry does not itself establish a hosted release or tag.
 
 ## Current release policy
 
-Prepare 1.2.1 as a **public preview**, with GitHub's prerelease flag. Developers
+Prepare the current version as a **public preview**, with GitHub's prerelease flag. Developers
 can install the default-branch marketplace or use reviewed versioned ZIPs once
 published. Do not advertise automatic triggering or completed native
 Claude/OpenCode workflows as verified. The current host blockers are documented
@@ -18,6 +18,15 @@ Update [release notes](release-notes.md) when evidence or limitations change.
 ## Prepare
 
 1. Confirm the intended version and update `VERSION`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and `adapters/opencode/plugin/package.json` using the same semantic version. The plugin version controls hosted update detection.
+
+   ```sh
+   python tools/aiea.py version <VERSION>
+   ```
+
+   The command rewrites every file declared in `.version-bump.json`, keeps the
+   rest of each manifest's formatting, and then audits the repository for
+   version references it does not manage. Run
+   `python tools/aiea.py version --check` to confirm the declared files agree.
 2. Review `CHANGELOG.md` and `docs/release-notes.md` for user-visible changes and actual verification limits. Date the changelog entry when publishing.
 3. Review the canonical skills, agent instructions, docs, fixtures, and current host compatibility references.
 4. Run validation and generate all host packages:
@@ -52,8 +61,8 @@ release; nothing is published from a broken build.
 3. Push the tag. The workflow publishes the release automatically.
 
    ```sh
-   git tag v1.2.1
-   git push origin main v1.2.1
+   git tag v<VERSION>
+   git push origin main v<VERSION>
    ```
 
 4. Push the marketplace files to the default branch before advertising GitHub installation commands. Official Anthropic directory submission is separate.
@@ -74,8 +83,8 @@ match the public preview policy above.
 Manual publishing remains available and is useful when the workflow cannot run:
 
 ```sh
-python tools/aiea.py release --output dist/release-1.2.1
-gh release create v1.2.1 dist/release-1.2.1/* --verify-tag --draft --prerelease --title "AIEA 1.2.1" --notes-file dist/release-1.2.1/RELEASE-NOTES.md
+python tools/aiea.py release --output dist/release-<VERSION>
+gh release create v<VERSION> dist/release-<VERSION>/* --verify-tag --draft --prerelease --title "AIEA <VERSION>" --notes-file dist/release-<VERSION>/RELEASE-NOTES.md
 ```
 
 These are publishing steps for the maintainer, not commands run by `aiea release`.

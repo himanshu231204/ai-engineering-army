@@ -6,6 +6,7 @@ Contributions should improve portable engineering workflows with clear scope and
 
 - Put every canonical skill directly under `.agents/skills/<skill-name>/SKILL.md`.
 - Register its name and core/specialist group in `skill-registry.json`; do not create grouping subdirectories.
+- Register any file that carries the repository version in `.version-bump.json`; run `python tools/aiea.py version --check` to confirm the declared files still agree.
 - Use a lowercase hyphenated folder and matching frontmatter `name`.
 - Write a specific `description` that explains the task and when the skill applies.
 - Keep the workflow host-neutral. Put host setup or packaging details under `adapters/`.

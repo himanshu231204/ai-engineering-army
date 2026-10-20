@@ -31,6 +31,7 @@ python tools/aiea.py package --host opencode --skill aiea-bootstrap --skill secu
 - `VERSION` semantic version format;
 - plugin and marketplace JSON, matching release versions, and complete canonical skill registration;
 - Codex manifest and OpenCode package metadata, version alignment, and entrypoint presence;
+- every version-bearing file declared in `.version-bump.json` carries the same version;
 - required v1 documentation;
 - JSON syntax for evaluation fixtures.
 
@@ -39,6 +40,43 @@ This is a focused structural check, not a complete YAML implementation or a beha
 Skill grouping comes from `skill-registry.json`, not directory nesting. The
 registry is maintenance metadata and does not need to be installed in a target
 project. Bootstrap carries its own discovery reference with every package.
+
+## Version registry
+
+`.version-bump.json` declares every file that carries the repository version.
+One registry drives validation, drift detection, and version bumps, so adding a
+host adapter means registering one file instead of editing several code paths.
+
+```sh
+python tools/aiea.py version --check
+python tools/aiea.py version --audit
+python tools/aiea.py version 1.3.0
+```
+
+- `--check` prints the version in each declared file and reports drift when
+  they disagree.
+- `--audit` also scans the repository for files that still contain the version
+  string without being declared, so a stale reference in code or configuration
+  is found rather than shipped.
+- A version argument rewrites every declared file and then runs the audit.
+
+Entries use a `path` and a `field`. `field: "text"` treats the whole file as
+the version, which is how `VERSION` is declared. Any other field is a dotted
+path into a JSON manifest, such as `version` or `plugins.0.version`. JSON
+values are replaced in place, so a bump changes only the version line and keeps
+the rest of each manifest's formatting. A YAML manifest may declare a
+top-level string field.
+
+The command reads every declared file before writing any of them. If one
+cannot be read, the bump stops and the repository is left unchanged.
+
+`audit.exclude` lists paths and glob patterns that the audit skips. Prose is
+excluded by default because release notes and documentation quote historical
+versions on purpose. Excluded patterns match a file name or any directory
+component, so `*.md` skips Markdown files and `dist` skips a whole directory.
+
+CI runs `--audit` on every push, and the release workflow runs it before
+publishing.
 
 ## Package contents
 

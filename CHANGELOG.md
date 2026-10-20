@@ -2,9 +2,17 @@
 
 All notable AIEA changes are recorded here.
 
-## 1.2.1 - Unreleased
+## 1.2.2 - Unreleased
 
-- Added a tag-triggered release workflow that validates, tests, builds every package, verifies the bundle checksums, and publishes a release with all assets.
+- Added a declarative version registry (`.version-bump.json`) that drives validation, drift detection, and version bumps from one place.
+- Added `aiea.py version` with `--check`, `--audit`, and bump modes; bumps rewrite only the version line and stay atomic when a declared file is unreadable.
+- Added a repository audit that finds version references outside the registry, and wired it into CI and the release workflow.
+- Required the release notes to name the current version, so a release cannot ship stale notes.
+- Moved the version out of prose: documentation and adapter guides now use placeholders instead of hardcoded numbers.
+
+## 1.2.1 - 2026-10-20
+
+- Added a tag-triggered release workflow that validates, tests, builds, verifies checksums, and publishes a release with every package asset.
 - Added a manual dispatch path with draft and prerelease overrides for releases that need review first.
 - Refused to publish when `VERSION` and the release tag disagree.
 - Documented the automated release path and kept manual publishing available.

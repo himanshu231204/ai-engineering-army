@@ -5,7 +5,7 @@ working, authenticated Claude Code, Codex, or OpenCode installation. Model acces
 usage charges, tools, and permissions come from that host. AIEA adds no service,
 telemetry, credentials, hooks, or background agent.
 
-Version 1.2.1 is prepared for a **public preview**. Packaging is tested; automatic
+The current version is prepared for a **public preview**. Packaging is tested; automatic
 activation and completed native Claude/OpenCode model workflows remain unverified.
 Use explicit activation for your first task and inspect the host's loading evidence.
 See [verification status](verification-status.md) for the precise evidence.
@@ -98,7 +98,7 @@ does not enforce a sandbox, spawn processes, or guarantee model compliance.
 Compare your ZIP's SHA-256 to its entry in `SHA256SUMS` from the same release:
 
 ```powershell
-Get-FileHash .\aiea-1.2.1-codex.zip -Algorithm SHA256
+Get-FileHash .\aiea-<version>-codex.zip -Algorithm SHA256
 ```
 
 On Linux use `sha256sum -c SHA256SUMS` with all listed assets present; on macOS

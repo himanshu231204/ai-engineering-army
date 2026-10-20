@@ -40,6 +40,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 14. Every package includes the MIT license without replacing the consumer project's license. The local `release` command prepares all six ZIPs, release notes, and checksums without publishing or overwriting prior output.
 15. The Codex plugin ZIP is a self-contained local marketplace. The OpenCode plugin registers only bundled skills, refuses name/ID conflicts, and fails explicitly on unsupported host APIs or missing files. Offline adapter tests are distinguished from native host evidence.
 16. Pushing a version tag publishes a GitHub release with every package asset, release notes, and checksums. The release workflow refuses to publish when `VERSION` and the tag disagree, when validation fails, or when the regression suite fails.
+17. Every version-bearing file is declared in `.version-bump.json`. One registry drives validation, drift detection, and bumps, and the audit finds version references the registry does not manage.
 
 ## Version history
 
