@@ -2,7 +2,7 @@
 
 ## Product definition
 
-AIEA 1.0 is a usable, portable skill framework for Claude Code, Codex, and OpenCode. It includes canonical skills, deterministic host-layout packaging, repository validation, and the documentation needed to use and maintain the project.
+AIEA 1.x is a usable, portable skill framework for Claude Code, Codex, and OpenCode. It includes canonical skills, deterministic host-layout packaging, repository validation, and the documentation needed to use and maintain the project.
 
 It does not include an orchestration engine, standalone agent, application, online service, automatic installer, or benchmark runner. ArmyBench remains independent.
 
@@ -15,6 +15,7 @@ It does not include an orchestration engine, standalone agent, application, onli
 | Delegation | Bounded, independent read-only analysis may run in parallel; one active writer integrates changes. |
 | Completion | Evidence-based checks and a bounded repair loop with honest reporting. |
 | CLI | Dependency-free commands to validate, list, and package the canonical skills. |
+| Plugin distribution (1.1) | Claude Code plugin, self-hosted marketplace catalog, and standalone ZIP using the same canonical skills. |
 | Host support | Claude Code, Codex, and OpenCode project layouts described with official documentation references. |
 | Evaluation | Sanitized, illustrative fixture data for later use by separate ArmyBench. |
 | Governance | Agent instructions, security guidance, contribution rules, changelog, version, and release procedure. |
@@ -30,7 +31,9 @@ It does not include an orchestration engine, standalone agent, application, onli
 7. CI runs validation and builds packages for all three hosts.
 8. The root README and agent instructions state the framework-only boundary and provide copy-pasteable commands.
 9. Architecture, host compatibility, CLI, security, contribution, evaluation, and release documentation agree with the implementation.
-10. No step requires secrets, network access, or a managed runtime.
+10. Local validation and packaging require no secrets, network access, or managed runtime. Installing from GitHub requires network access through the host.
+11. Plugin metadata matches `VERSION`, explicitly covers every canonical skill once, and resolves within the plugin root.
+12. Regression checks cover all four package targets, hashes, selected skills, reproducibility, overwrite protection, and invalid plugin metadata.
 
 ## Operational limits
 

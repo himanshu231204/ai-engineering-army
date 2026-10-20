@@ -2,15 +2,31 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Current version:** `1.0.0` · **License:** MIT
+**Current version:** `1.1.0` · **License:** MIT
 
 ## What v1 includes
 
+- A Claude Code marketplace/plugin adapter and standalone plugin ZIP.
 - Nine portable skills: four core workflow skills and five read-only specialist contracts.
 - A dependency-free Python CLI to validate and list skills and build ZIP packages for supported hosts.
 - Host compatibility guidance for native discovery and packaged skill locations.
 - Security, contribution, release, evaluation, and final architecture documentation.
 - A small evaluation fixture for the separate ArmyBench project.
+
+## Claude Code plugin
+
+AIEA now includes a Claude Code plugin and its own marketplace. After this change
+is published to the default branch, install it inside Claude Code:
+
+```text
+/plugin marketplace add himanshu231204/ai-engineering-army
+/plugin install aiea@aiea-marketplace
+```
+
+Start with `/aiea:aiea-bootstrap`. For this unpublished checkout, use
+`claude --plugin-dir /path/to/ai-engineering-army` from a separate target project.
+See [plugin installation, all nine commands, and smoke checks](docs/claude-code-plugin.md).
+No Python is needed to use the installed plugin; Python is for maintainer tooling.
 
 ## Quick start
 
@@ -53,6 +69,7 @@ See [CLI usage](docs/cli.md), [host compatibility](docs/host-compatibility.md), 
 ## Repository map
 
 - `.agents/skills/` — canonical core skills and specialist contracts.
+- `.claude-plugin/` — Claude Code plugin manifest and marketplace catalog.
 - `tools/aiea.py` — validation, listing, and host package CLI.
 - `adapters/` — verified host discovery and packaging details.
 - `evaluations/fixtures/` — small, host-neutral examples.
@@ -65,6 +82,8 @@ ArmyBench is a separate project. This repository does not contain its applicatio
 
 ```sh
 python tools/aiea.py validate
+python -m unittest discover -s tests -v
+python tools/aiea.py package --host claude-code-plugin --output .tmp/packages
 python tools/aiea.py package --host claude-code --output .tmp/packages
 python tools/aiea.py package --host codex --output .tmp/packages
 python tools/aiea.py package --host opencode --output .tmp/packages

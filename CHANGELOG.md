@@ -2,6 +2,15 @@
 
 All notable AIEA changes are recorded here.
 
+## 1.1.0 - Unreleased
+
+- Added the `aiea` Claude Code plugin and `aiea-marketplace` self-hosted catalog.
+- Registered all nine canonical skills explicitly without maintaining copies.
+- Added a standalone `claude-code-plugin` ZIP target with license and hashes.
+- Added metadata/version validation, distribution regression tests, and CI coverage.
+- Documented local testing, marketplace installation, updates, and release checks.
+- Preserved the three existing project-skill package targets and ArmyBench boundary.
+
 ## 1.0.0 - 2026-10-20
 
 - Established AIEA as a framework-only portable Agent Skills project.

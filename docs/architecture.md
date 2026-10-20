@@ -48,6 +48,13 @@ Each host can discover skills using its own directory conventions. AIEA keeps on
 
 Hybrid activation means native discovery is the default when supported; `aiea-bootstrap` describes manual discovery for sessions where that is unavailable or unclear. AIEA never claims a host loaded a skill without evidence.
 
+Version 1.1 also distributes the canonical skills as the `aiea` Claude Code
+plugin. The repository-root `.claude-plugin/plugin.json` explicitly registers
+all nine skill directories; `.claude-plugin/marketplace.json` catalogs that root
+as `aiea@aiea-marketplace`. A standalone plugin ZIP is generated with the standard
+`skills/` layout. Both forms remain instruction-only host adapters; neither adds
+an orchestration engine. See [the plugin guide](claude-code-plugin.md).
+
 ### 4. Delegation protocol
 
 The lead agent scopes work and may ask independent specialists bounded read-only questions. Specialists return findings with evidence and open questions; they do not modify shared code. The lead reviews findings and performs shared-tree integration as the single active writer. If the host cannot run specialists independently, the lead uses the same contracts directly and reports the limitation when relevant.
@@ -73,4 +80,4 @@ The `VERSION` file identifies the framework package version. `docs/release.md` d
 
 ## Explicitly outside this architecture
 
-No orchestration runtime, model router, service, application, automatic installer, telemetry system, plugin marketplace listing, or ArmyBench runner ships in v1. Future proposals must preserve the usability of the canonical skills without those components.
+No orchestration runtime, model router, service, application, automatic installer, telemetry system, or ArmyBench runner ships in v1. The v1.1 self-hosted plugin marketplace is a distribution adapter; an official Anthropic directory listing is a separate submission. Future proposals must preserve the usability of the canonical skills without those components.

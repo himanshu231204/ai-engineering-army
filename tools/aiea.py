@@ -9,7 +9,6 @@ import re
 import sys
 import zipfile
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +19,7 @@ FIELD_PATTERN = re.compile(r"^([a-z][a-z0-9_-]*):(?:[ \t]*(.*))?$")
 VERSION_PATTERN = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
 HOST_PATHS = {
     "claude-code": ".claude/skills",
+    "claude-code-plugin": "skills",
     "codex": ".agents/skills",
     "opencode": ".agents/skills",
 }
@@ -38,6 +38,7 @@ REQUIRED_DOCS = (
     "docs/version-1.md",
     "docs/host-compatibility.md",
     "docs/cli.md",
+    "docs/claude-code-plugin.md",
     "docs/release.md",
     "docs/security.md",
     "docs/contributing.md",
@@ -173,6 +174,55 @@ def load_skills(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
     return skills, errors
 
 
+def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
+    """Check AIEA distribution invariants, not the entire Claude Code schema."""
+    errors: list[str] = []
+    documents: dict[str, dict] = {}
+    for name in ("plugin", "marketplace"):
+        path = root / ".claude-plugin" / f"{name}.json"
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(document, dict):
+                raise ValueError("expected a JSON object")
+            documents[name] = document
+        except (OSError, ValueError) as error:
+            errors.append(f".claude-plugin/{name}.json: {error}")
+    plugin = documents.get("plugin")
+    if plugin is not None:
+        if plugin.get("name") != "aiea":
+            errors.append("plugin name must be aiea")
+        if plugin.get("version") != version:
+            errors.append("plugin version must match VERSION")
+        author = plugin.get("author")
+        if not isinstance(author, dict) or not author.get("name") or not plugin.get("description"):
+            errors.append("plugin must have an author name and description")
+        expected = sorted("./" + skill.path.relative_to(root).as_posix() for skill in skills)
+        paths = plugin.get("skills")
+        if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
+            errors.append("plugin skills must be an array of paths")
+        elif sorted(paths) != expected:
+            errors.append("plugin skills must reference every canonical skill exactly once")
+        # The default directory is additive even with custom skills paths.
+        if (root / "skills").exists():
+            errors.append("root skills/ would add non-canonical plugin skills")
+    marketplace = documents.get("marketplace")
+    if marketplace is not None:
+        if marketplace.get("name") != "aiea-marketplace":
+            errors.append("marketplace name must be aiea-marketplace")
+        owner = marketplace.get("owner")
+        if not isinstance(owner, dict) or not owner.get("name"):
+            errors.append("marketplace must have an owner name")
+        entries = marketplace.get("plugins")
+        if (not isinstance(entries, list) or len(entries) != 1
+                or not isinstance(entries[0], dict)
+                or entries[0].get("name") != "aiea"
+                or entries[0].get("source") != "./"):
+            errors.append("marketplace must list aiea from ./")
+        elif any(key in entries[0] for key in ("version", "skills", "strict")):
+            errors.append("plugin.json owns the version and skill paths; do not override them in the marketplace")
+    return errors
+
+
 def repository_errors(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
     skills, errors = load_skills(root)
     version_path = root / "VERSION"
@@ -183,6 +233,8 @@ def repository_errors(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
         version = version_path.read_text(encoding="utf-8-sig").strip()
         if not VERSION_PATTERN.fullmatch(version):
             errors.append("VERSION must contain a semantic version such as 1.0.0")
+
+    errors.extend(plugin_errors(root, skills, version))
 
     for required in REQUIRED_DOCS:
         if not (root / required).is_file():
@@ -206,7 +258,7 @@ def command_validate(_: argparse.Namespace) -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
     version = VERSION_FILE.read_text(encoding="utf-8-sig").strip()
-    print(f"AIEA {version}: validated {len(skills)} skills, required documents, and evaluation fixtures.")
+    print(f"AIEA {version}: validated {len(skills)} skills, plugin/marketplace metadata, required documents, and evaluation fixtures.")
     return 0
 
 
@@ -260,6 +312,13 @@ def command_package(args: argparse.Namespace) -> int:
     archive_path = output_dir / f"aiea-{version}-{args.host}.zip"
     payloads: list[tuple[str, bytes]] = []
     manifest_files: list[dict[str, object]] = []
+
+    def add_payload(name: str, data: bytes) -> None:
+        payloads.append((name, data))
+        manifest_files.append({
+            "path": name, "size": len(data), "sha256": hashlib.sha256(data).hexdigest(),
+        })
+
     prefix = PurePosixPath(install_path)
     for skill in selected:
         for file_path in sorted(skill.path.rglob("*")):
@@ -268,30 +327,39 @@ def command_package(args: argparse.Namespace) -> int:
             relative_inside_skill = file_path.relative_to(skill.path).as_posix()
             archive_name = (prefix / skill.name / PurePosixPath(relative_inside_skill)).as_posix()
             data = file_path.read_bytes()
-            payloads.append((archive_name, data))
-            manifest_files.append({
-                "path": archive_name,
-                "size": len(data),
-                "sha256": hashlib.sha256(data).hexdigest(),
-            })
+            add_payload(archive_name, data)
+
+    is_plugin = args.host == "claude-code-plugin"
+    if is_plugin:
+        plugin = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+        # The standalone bundle uses Claude Code's standard skills/ layout.
+        plugin.pop("skills", None)
+        add_payload(".claude-plugin/plugin.json", (json.dumps(plugin, indent=2) + "\n").encode("utf-8"))
+        add_payload("LICENSE", (ROOT / "LICENSE").read_bytes())
+
+    installation = (
+        "Extract into a separate plugin directory, then run `claude --plugin-dir ./aiea-plugin` "
+        "using the extracted directory's actual path. In Claude Code invoke `/aiea:aiea-bootstrap`.\n\n"
+        if is_plugin else
+        f"Extract this archive at the root of the target project. The skills will be placed under `{install_path}/`.\n\n"
+    )
+    install_readme = (
+        f"# AIEA {version} package for {args.host}\n\n" + installation +
+        "Review skill contents before enabling them in an agent host. This package contains instructions and resources; "
+        "it does not install an agent, grant tools, or configure permissions.\n"
+    ).encode("utf-8")
+    add_payload("AIEA-INSTALL.md", install_readme)
 
     manifest = {
         "name": "ai-engineering-army",
         "version": version,
         "host": args.host,
-        "format": "Agent Skills",
+        "format": "Claude Code plugin" if is_plugin else "Agent Skills",
         "install_path": install_path,
         "skills": [skill.name for skill in selected],
         "files": manifest_files,
     }
-    install_readme = (
-        f"# AIEA {version} package for {args.host}\n\n"
-        f"Extract this archive at the root of the target project. The skills will be placed under `{install_path}/`.\n\n"
-        "Review skill contents before enabling them in an agent host. This package contains instructions and resources; "
-        "it does not install an agent, grant tools, or configure permissions.\n"
-    ).encode("utf-8")
     payloads.extend([
-        ("AIEA-INSTALL.md", install_readme),
         ("aiea-manifest.json", (json.dumps(manifest, indent=2, ensure_ascii=False) + "\n").encode("utf-8")),
     ])
 
