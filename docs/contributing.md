@@ -23,9 +23,22 @@ Contributions should improve portable engineering workflows with clear scope and
 
 ## Before opening a pull request
 
+The pull request template asks for the problem, the change, the checks you ran
+with their exit codes, and the human who reviewed the diff. Complete it
+honestly: sections left blank or filled with placeholder text will be closed
+without review.
+
 - Run `python tools/aiea.py validate`.
+- Run `python -m unittest discover -s tests -v`.
+- Run `python tools/aiea.py version --audit` if the change touches a version-bearing file.
 - If packaging changes, build and inspect archives for all affected hosts.
 - Review the diff for accidental credentials, unrelated files, and unsupported claims.
 - Describe checks performed and outcomes; do not claim checks that were not run.
+- Keep one change per pull request, and have a human review the complete diff.
+
+Issues use the templates under `.github/ISSUE_TEMPLATE/`. Bug reports ask for
+the host, the model, and the command that failed; a feature request asks
+whether the change fits the framework-only scope. Use Discussions for usage
+questions rather than opening an issue.
 
 By contributing, you agree that your contributions are provided under the repository's MIT license.

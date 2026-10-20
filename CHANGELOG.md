@@ -2,7 +2,13 @@
 
 All notable AIEA changes are recorded here.
 
-## 1.3.0 - Unreleased
+## 1.3.1 - Unreleased
+
+- Added GitHub issue templates for bug reports, evidence-backed reports, feature requests, and new host support, with blank issues disabled and questions routed to Discussions.
+- Added a pull request template that requires the submitting model and host, the problem, the scope check, alternatives considered, the commands run with their exit codes, and a human review of the complete diff.
+- Required the issue and pull request templates as repository documents so validation fails if one goes missing.
+
+## 1.3.0 - 2026-10-20
 
 - Expanded to ten core workflows with reconnaissance, requirements discovery, architecture design, task planning, implementation, and handoff.
 - Added testing and browser-QA specialists, bringing read-only specialist contracts to seven roles.
