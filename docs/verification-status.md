@@ -184,5 +184,23 @@ hold. The repository changes below address what the portal can check.
 | Warning: download-and-run pattern | Resolved. The developer guide no longer contains a shell block that fetches code and then executes it. |
 | Warning: unrecognized listing fields | Resolved. `documentationUrl` and `supportUrl` are directory-only fields that Claude Code ignores, so they were removed and `homepage` carries the documentation URL instead. The validator now rejects any directory-only field in the manifest. |
 
+## Data handling declarations: 2026-10-20
+
+Recorded so the submission form's answers and the listing description agree.
+The directory reads the README as the listing description.
+
+| Question | Answer | Evidence |
+|---|---|---|
+| Does the plugin read or store personal data? | No | The plugin declares seventeen skills and no connectors, hooks, MCP servers, commands, or agents. It reads only its own bundled skill files and stores nothing. |
+| Does any skill send data to a service other than the declared connectors? | No | No connector is declared, and no skill instructs sending data. Several skills forbid publishing, deploying, pushing, and sending without authorization. |
+| How long does your service retain data received from Claude? | Not retained | There is no AIEA service. Nothing is received, so nothing is retained. |
+| Is the plugin intended for users under 18? | No | It is a professional developer engineering-workflow plugin. |
+
+The only file in the plugin folder that executes is the optional OpenCode 2
+registration module. It imports `node:fs/promises` and `node:url` only: no
+`fetch`, no `node:net`, no `child_process`, and no package launcher. The
+maintainer CLI and the regression tests live in the repository but are not
+plugin components and no host component invokes them.
+
 Directory review decides what goes live. Native automatic activation of the
 skills remains unverified, as recorded above.

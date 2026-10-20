@@ -2,7 +2,7 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.4.2` (public release) · **License:** MIT
+**Source version:** `1.4.3` (public release) · **License:** MIT
 
 **Documentation:** [developer guide](docs/getting-started.md) · **Support:** [GitHub issues](https://github.com/himanshu231204/ai-engineering-army/issues) · **Security:** [security policy](SECURITY.md)
 
@@ -12,14 +12,24 @@ preview. Packaging and bounded Codex Work exercises have been checked; automatic
 activation and completed native Claude/OpenCode model workflows remain unverified.
 See [the evidence and limits](docs/verification-status.md).
 
-**What this plugin runs.** It ships Markdown instructions and two static
-adapter files. It contains no hooks, no MCP servers, no commands, no agents,
-and no executable scripts, and it makes no network requests or telemetry. The
-only file that executes is the optional OpenCode 2 registration module, which
-reads its own bundled skill files and contributes skill definitions. `AGENTS.md`
-and `AGENTS.md` at the repository root are contributor instructions for people
-working *in* this repository; they are not loaded as plugin context. The plugin
-ships its own user-facing context in the `aiea-bootstrap` skill.
+**What this plugin reads, writes, and sends.** The plugin declares seventeen
+skills and nothing else: no hooks, no MCP servers, no commands, no agents, no
+connectors. It reads only its own bundled skill files, stores nothing, sends
+nothing, and makes no network requests or telemetry. The single file that
+executes is the optional OpenCode 2 registration module, which imports only
+`node:fs/promises` and `node:url` to read its bundled index and skill files and
+register skill definitions.
+
+Skills are instructions the host's agent follows under the permissions you
+already granted it. They read the project files you point the agent at, using
+your own tools and your own credentials. Several skills explicitly forbid
+publishing, deploying, pushing, or sending anything without your authorization.
+
+There is no AIEA service. Nothing is received, so nothing is retained.
+`AGENTS.md` at the repository root is a contributor instruction file for people
+working *in* this repository; it is not loaded as plugin context. The plugin
+ships its own user-facing context in the `aiea-bootstrap` skill. This plugin is
+a professional developer tool and is not intended for users under 18.
 
 ## What v1 includes
 

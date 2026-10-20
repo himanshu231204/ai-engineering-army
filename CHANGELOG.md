@@ -2,6 +2,12 @@
 
 All notable AIEA changes are recorded here.
 
+## 1.4.3 - Unreleased
+
+- Stated in the README exactly what the plugin reads, writes, and sends, matching the data-handling answers in the directory submission form.
+- Recorded the data-handling declarations in the verification status, with the evidence behind each answer.
+- Fixed a duplicated word in the README plugin description.
+
 ## 1.4.2 - Unreleased
 
 - Removed the directory-only fields `documentationUrl` and `supportUrl` from the plugin manifest. Claude Code ignores them, and the plugin directory reports them as unrecognized fields.
