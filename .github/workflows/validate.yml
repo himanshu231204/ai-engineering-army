@@ -16,13 +16,13 @@ jobs:
         python: ["3.10", "3.12"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
       - name: Set up Node for OpenCode adapter contract tests
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
       - name: Validate skills, docs, and fixtures
@@ -32,7 +32,7 @@ jobs:
       - name: Prepare release assets
         run: python tools/aiea.py release --output dist/release
       - name: Retain downloadable release assets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: aiea-${{ matrix.os }}-python-${{ matrix.python }}
           path: dist/release/*
