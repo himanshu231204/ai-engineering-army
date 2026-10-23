@@ -86,7 +86,7 @@ involvement will be closed without review.
 
      ACCEPTANCE TEST: Start a clean session in the host against this
      repository and ask it to list its available skills. A working
-     integration shows all nine skills and loads `aiea-bootstrap` when asked.
+     integration shows every canonical skill (17 in the current version) and loads `aiea-bootstrap` when asked.
 
      These are NOT real integrations and PRs that ship them will be closed:
 
