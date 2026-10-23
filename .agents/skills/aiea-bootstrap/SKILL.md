@@ -26,7 +26,7 @@ Use this skill when a task begins, the needed workflow is unclear, or skill disc
    counters cannot be recovered, stop repairs and report that blocker.
 6. Report exactly one scoped outcome using the ledger definitions: Failed,
    Blocked, Inconclusive, or Verified. Include scope/revision, changes/findings,
-   actual evidence, repair counts/limits, limitations, and next action. A static
+   actual evidence, repair counts/limits, limitations, and next action. Inspection of source or artifacts confirms a defect it shows: report Failed and label the evidence static. Unrun runtime or browser checks are limitations; they make the outcome Inconclusive only when no defect is shown. A static
    review does not imply verified runtime behavior.
 
 For unfamiliar or substantial work, select repository-reconnaissance,

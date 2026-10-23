@@ -40,7 +40,7 @@ not transfer responsibility or grant additional permissions.
    (external prerequisite, absent higher-precedence failure), Inconclusive
    (insufficient/stale/flaky/conflicting evidence), or Verified (all required
    scoped checks pass at final state). Include scope/revision, changes/findings,
-   actual evidence, repair counts/limits, limitations, and next action. Static
+   actual evidence, repair counts/limits, limitations, and next action. Inspection of source or artifacts confirms a defect it shows: report Failed and label the evidence static. Unrun runtime or browser checks are limitations; they make the outcome Inconclusive only when no defect is shown. Static
    evidence does not verify runtime behavior.
 
 **Boundary:** Do not assume permission to reset a worktree, alter credentials,

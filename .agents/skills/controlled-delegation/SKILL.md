@@ -32,8 +32,11 @@ The lead agent owns the task outcome and shared-tree integration.
 - The lead evaluates findings, resolves disagreement, chooses changes, and integrates them sequentially as the sole active writer.
 - Review all proposed edits and run relevant verification after integration.
 - Do not treat a specialist's confidence as evidence. Confirm important claims against files, commands, or observed behavior.
-- If specialists disagree, compare the underlying evidence and return unresolved
-  decisions to the lead. If a specialist fails or reaches its budget, retain its
+- If specialists disagree about a fact, check the cited file, line, or output
+  yourself or ask the owning specialist for one bounded read-only recheck at the
+  same source revision, then record the resolution. Mark a disagreement that
+  cannot be rechecked as unresolved and name who must decide it.
+- If a specialist fails or reaches its budget, retain its
   partial findings and mark that review incomplete; do not silently substitute
   fictional results or give another agent concurrent write access.
 - Use the shared scoped terminal outcome definitions: Failed for a confirmed
@@ -41,7 +44,7 @@ The lead agent owns the task outcome and shared-tree integration.
   failure taking precedence, Inconclusive for insufficient/stale/flaky/conflicting
   evidence, and Verified only for all required checks in the stated scope passing
   at final state. Report scope/revision, findings, actual evidence, repair
-  counts/limits, limitations, and next action; static review is not runtime proof.
+  counts/limits, limitations, and next action; static review is not runtime proof. Inspection of source or artifacts confirms a defect it shows: report Failed and label the evidence static. Unrun runtime or browser checks are limitations; they make the outcome Inconclusive only when no defect is shown.
 
 ## Specialist contract
 

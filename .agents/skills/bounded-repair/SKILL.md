@@ -30,5 +30,5 @@ license: MIT
    no confirmed failure takes precedence), Inconclusive (evidence is
    insufficient, stale, flaky, or conflicting), or Verified (all scoped required
    checks pass at final state). Include revision, evidence, counts/limits,
-   limitations, and next action. Do not imply runtime verification from static
+   limitations, and next action. Inspection of source or artifacts confirms a defect it shows: report Failed and label the evidence static. Unrun runtime or browser checks are limitations; they make the outcome Inconclusive only when no defect is shown. Do not imply runtime verification from static
    evidence.

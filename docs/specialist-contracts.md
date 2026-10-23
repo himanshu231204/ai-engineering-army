@@ -38,6 +38,10 @@ Each scoped report chooses exactly one terminal outcome:
 - **Inconclusive:** evidence is insufficient, stale, flaky, or conflicting.
 - **Verified:** all required checks in the stated scope pass at final state.
 
+A defect shown by inspecting source or artifacts counts as confirmed: report **Failed** and label the evidence *static*. Checks that could not run (runtime, browser, live database) are listed as limitations; they make the outcome **Inconclusive** only when no defect is shown. Specialists that read the same source should therefore reach the same outcome term.
+
+When specialists disagree about a fact, the lead checks the cited file or output, or asks the owning specialist for one bounded read-only recheck at the same source revision, and records the resolution or marks it unresolved with the decider named.
+
 Return outcome, scope/revision, findings, actual evidence, repair counts/limits
 when applicable, limitations, and next action. A static review cannot imply
 verified runtime behavior.

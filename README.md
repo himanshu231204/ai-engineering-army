@@ -2,7 +2,7 @@
 
 AIEA is an open-source, portable Agent Skills framework for Claude Code, Codex, and OpenCode. It improves engineering workflows in the coding host people already use. It is not a standalone coding agent, orchestration engine, or application.
 
-**Source version:** `1.5.0` (public release) · **License:** MIT
+**Source version:** `1.5.0` (unreleased until the `v1.5.0` tag is published; see CHANGELOG.md) · **License:** MIT
 
 **Documentation:** [developer guide](docs/getting-started.md) · **Support:** [GitHub issues](https://github.com/himanshu231204/ai-engineering-army/issues) · **Security:** [security policy](SECURITY.md)
 

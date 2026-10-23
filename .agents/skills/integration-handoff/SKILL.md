@@ -30,7 +30,7 @@ conversation. A prepared patch and a published change are different states.
    with no confirmed failure taking precedence), Inconclusive (evidence is
    insufficient, stale, flaky, or conflicting), or Verified (all required scoped
    checks pass at final state). Include scope/revision, changes/findings, actual
-   evidence, repair counts/limits, limitations, and next action. A static review
+   evidence, repair counts/limits, limitations, and next action. Inspection of source or artifacts confirms a defect it shows: report Failed and label the evidence static. Unrun runtime or browser checks are limitations; they make the outcome Inconclusive only when no defect is shown. A static review
    cannot imply runtime behavior. Scale detail to the change.
 
 **Boundary:** This skill does not itself authorize Git writes, merging, sending

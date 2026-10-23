@@ -66,4 +66,4 @@ Choose exactly one outcome for the stated scope:
 
 A static review can be Verified as a static review; it cannot establish runtime
 behavior. Report outcome, scope/revision, changes or findings, actual evidence,
-repair counts and limits, limitations, and next action.
+repair counts and limits, limitations, and next action. Inspection of source or artifacts confirms a defect it shows: report Failed and label the evidence static. Unrun runtime or browser checks are limitations; they make the outcome Inconclusive only when no defect is shown.
