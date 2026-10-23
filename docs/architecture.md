@@ -111,7 +111,10 @@ no confirmed failure takes precedence), Inconclusive (evidence is insufficient,
 stale, flaky, or conflicting), or Verified (all required scoped checks pass at
 final state). Include scope/revision, changes/findings, actual evidence, repair
 counts/limits, limitations, and next action. Static review cannot establish
-runtime behavior. [Manual validation](workflow-validation.md) checks this
+runtime behavior, but a defect shown by inspecting source is confirmed: it is Failed
+with the evidence labeled static, and unrun checks are limitations. The shared
+wording is enforced identically in every skill document that defines outcomes by
+`python tools/aiea.py validate`. [Manual validation](workflow-validation.md) checks this
 sequence; [verification status](verification-status.md) records observations.
 
 ### 6. Evaluation boundary

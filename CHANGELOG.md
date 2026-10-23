@@ -4,6 +4,8 @@ All notable AIEA changes are recorded here.
 
 ## 1.5.0 - Unreleased
 
+- Made scoped outcomes consistent for static reviews: a defect shown by inspecting source is Failed with the evidence labeled static, and unrun checks are limitations. Validation now rejects any outcome-defining skill document that lacks the shared rule, preventing the copied wording from drifting.
+- Added a disagreement rule to controlled delegation: recheck a disputed fact against the cited source at the same revision, or mark it unresolved and name the decider.
 - Added a reusable bootstrap ledger for revisions, actual skill loads, acceptance evidence, repair history, blockers, and scoped handoffs; it remains in session unless persistence is authorized.
 - Standardized two repair attempts per failure and five per run by default, with reservation-before-change and stable accounting across handoffs and resumes.
 - Standardized scoped outcomes and handoff evidence across core workflows and all seven specialists.

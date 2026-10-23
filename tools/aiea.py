@@ -86,6 +86,12 @@ class Skill:
     group: str
 
 
+STATIC_EVIDENCE_RULE = (
+    "Inspection of source or artifacts confirms a defect it shows: report Failed and label the evidence static. "
+    "Unrun runtime or browser checks are limitations; they make the outcome Inconclusive only when no defect is shown."
+)
+
+
 def _yaml_scalar(value: str) -> str:
     value = value.strip()
     if len(value) >= 2 and value[0] == value[-1] == '"':
@@ -298,6 +304,17 @@ def plugin_errors(root: Path, skills: list[Skill], version: str) -> list[str]:
     return errors
 
 
+def outcome_errors(root: Path = ROOT) -> list[str]:
+    """Every skill document that defines scoped outcomes must carry the static-evidence rule verbatim."""
+    errors: list[str] = []
+    skills_dir = root / ".agents" / "skills"
+    for path in sorted(skills_dir.glob("*/**/*.md")):
+        text = " ".join(path.read_text(encoding="utf-8-sig").split())
+        if all(term in text for term in ("Failed", "Blocked", "Inconclusive", "Verified")) and STATIC_EVIDENCE_RULE not in text:
+            errors.append(f"{path.relative_to(root).as_posix()}: outcome definition lacks the shared static-evidence rule")
+    return errors
+
+
 def repository_errors(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
     skills, errors = load_skills(root)
     version_path = root / "VERSION"
@@ -312,6 +329,7 @@ def repository_errors(root: Path = ROOT) -> tuple[list[Skill], list[str]]:
     errors.extend(plugin_errors(root, skills, version))
     errors.extend(adapter_errors(root, version))
     errors.extend(version_errors(root))
+    errors.extend(outcome_errors(root))
 
     for required in REQUIRED_DOCS:
         if not (root / required).is_file():
